@@ -1,5 +1,7 @@
 package com.capgemini.algorithmbattles.ballsapp.logic;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import com.capgemini.algorithmbattles.ballsapp.connector.RestService;
@@ -9,7 +11,7 @@ import com.capgemini.algorithmbattles.ballsapp.solution.GamePlayer;
 
 /**
  * This class is responsible for creating an instance of a game while connecting and passing calls to {@link #nextMove()}
- * and {@link #moveMadeByOpponent(Move)} from the {@link RestService}.
+ * and {@link #moveMadeByOpponent(BoardCell)} from the {@link RestService}.
  * <p>
  * ATTENTION: The application must be rebooted to play a new game each time (also another instance of the application
  * can be started on another port). Unfortunately this is the best way to implement this without a database and
@@ -20,6 +22,8 @@ import com.capgemini.algorithmbattles.ballsapp.solution.GamePlayer;
 @Component
 public class GameManager {
 
+  private static final Logger LOG = LoggerFactory.getLogger(GameManager.class);
+
   private GamePlayer gamePlayer;
 
   /**
@@ -28,18 +32,17 @@ public class GameManager {
    * @param playerString the number of the player (1s or 2nd).
    */
   public void startGame(String playerString) {
-    if (gamePlayer == null) {
-      Player player = playerString.equals("player1") ? Player.PLAYER_1 : Player.PLAYER_2;
-      gamePlayer = new GamePlayer(player);
-    } else {
-      throw new RuntimeException("Game already started");
+    if (gamePlayer != null) {
+      LOG.warn("Current game was interrupted because a new game was started on the client.");
     }
+    Player player = playerString.equals("player1") ? Player.PLAYER_1 : Player.PLAYER_2;
+    gamePlayer = new GamePlayer(player);
   }
 
   /**
    * The application should calculate the next move after this method call.
    *
-   * @return the next {@link Move move} for current player.
+   * @return the next {@link BoardCell move} for current player.
    */
   public BoardCell nextMove() {
     return gamePlayer.nextMove();
@@ -48,7 +51,7 @@ public class GameManager {
   /**
    * The opponent made the move passed in param.
    *
-   * @param move the {@link Move} made by the opponent.
+   * @param move the {@link BoardCell} made by the opponent.
    */
   public void moveMadeByOpponent(BoardCell move) {
     gamePlayer.moveMadeByOpponent(move);

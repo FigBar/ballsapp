@@ -42,6 +42,7 @@ public class RestService {
 
   /**
    * The method is called when the game-application tries to connect to the player-application and start the new game.
+   *
    * @param player The param says which player the current application is assigned to
    */
   @RequestMapping(value = "/start-game", method = RequestMethod.POST)
