@@ -1,5 +1,6 @@
 package com.capgemini.algorithmbattles.ballsapp.solution;
 
+import com.capgemini.algorithmbattles.ballsapp.logic.BoardDrawer;
 import com.capgemini.algorithmbattles.ballsapp.logic.model.Board;
 import com.capgemini.algorithmbattles.ballsapp.logic.model.BoardCell;
 import com.capgemini.algorithmbattles.ballsapp.logic.model.Player;
@@ -26,7 +27,7 @@ public class GamePlayer {
   }
 
   private BoardCell getCellForNextMove() {
-    //TODO: Please implement it.
+    // TODO: Please implement it.
     BoardCell firstEmptyCell = board.getFirstEmptyCell();
     firstEmptyCell.setPlayer(player);
     return firstEmptyCell;
@@ -41,4 +42,17 @@ public class GamePlayer {
     this.board.placeMove(move);
   }
 
+  /**
+   * @return true if the game is finished
+   */
+  public boolean isGameFinished() {
+    return this.board.isGameFinished();
+  }
+
+  /**
+   * Draw the board on the console.
+   */
+  public void printBoard() {
+    this.board.printBoard();
+  }
 }
