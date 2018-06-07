@@ -33,14 +33,15 @@ public class Board {
         for (int row = 0; row < 10; row++) {
             while (i <= 5) {
                 if (board[row][i] == board[row][i + 1] &&
-                        board[row][i + 1] == board[row][i + 2] && board[row][i + 3] == board[row][i + 4]) {
+                        board[row][i + 1] == board[row][i + 2] &&  board[row][i + 2] == board[row][i + 3] && board[row][i + 3] == board[row][i + 4]) {
 
                     if (board[row][i].toString().equals(which))
                         return +10;
                     else if (board[row][i] != null)
                         return -10;
-                    i++;
+
                 }
+                i++;
             }
         }
 
@@ -56,12 +57,12 @@ public class Board {
 
                     else if (board[i][col] != null)
                         return -10;
-                    i++;
                 }
+                i++;
 
             }
         }
-        // Checking for diagonals going from top right corner to bottom left corner.
+        // Checking for diagonals going from top left corner to bottom right corner.
         for (int row = 0; row < 6; row++) {
             for (int col = 0; col < 6; col++) {
                 if (board[row][col] == board[row + 1][col + 1] && board[row + 1][col + 1] == board[row + 2][col + 2] && board[row + 2][col + 2] == board[row + 3][col + 3] &&
@@ -75,7 +76,7 @@ public class Board {
             }
 
         }
-
+      // Checking for diagonals going from top right corner to bottom left corner.
         for (int row = 0; row < 6; row++) {
             for (int col = 9; col >= 4; col--) {
                 if (board[row][col] == board[row + 1][col - 1] && board[row + 1][col - 1] == board[row + 2][col - 2] && board[row + 2][col - 2] == board[row + 3][col - 3] &&
