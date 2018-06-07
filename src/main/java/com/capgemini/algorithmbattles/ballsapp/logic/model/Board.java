@@ -25,7 +25,7 @@ public class Board {
     public Player[][] getBoard() {
         return board;
     }
-
+    @SuppressWarnings("Duplicates")
     public int evaluate(Player player) {
         String which = player.toString();
         // Checking for Rows for X or O victory.
@@ -33,11 +33,13 @@ public class Board {
         for (int row = 0; row < 10; row++) {
             while (i <= 5) {
                 if (board[row][i] == board[row][i + 1] &&
-                        board[row][i + 1] == board[row][i + 2] &&  board[row][i + 2] == board[row][i + 3] && board[row][i + 3] == board[row][i + 4]) {
+                        board[row][i + 1] == board[row][i + 2] && board[row][i + 2] == board[row][i + 3] && board[row][i + 3] == board[row][i + 4]) {
 
-                    if (board[row][i].toString().equals(which))
+                    if (board[row][i] == null)
+                        i++;
+                    else if (board[row][i].toString().equals(which))
                         return +10;
-                    else if (board[row][i] != null)
+                    else
                         return -10;
 
                 }
@@ -52,10 +54,12 @@ public class Board {
             while (i <= 5) {
                 if (board[i][col] == board[i + 1][col] && board[i + 1][col] == board[i + 2][col] &&
                         board[i + 2][col] == board[i + 3][col] && board[i + 3][col] == board[i + 4][col]) {
-                    if (board[i][col].toString().equals(which))
-                        return +10;
 
-                    else if (board[i][col] != null)
+                    if (board[i][col] == null)
+                        i++;
+                    else if (board[i][col].toString().equals(which))
+                        return +10;
+                    else
                         return -10;
                 }
                 i++;
@@ -67,24 +71,26 @@ public class Board {
             for (int col = 0; col < 6; col++) {
                 if (board[row][col] == board[row + 1][col + 1] && board[row + 1][col + 1] == board[row + 2][col + 2] && board[row + 2][col + 2] == board[row + 3][col + 3] &&
                         board[row + 3][col + 3] == board[row + 4][col + 4]) {
-                    if (board[row][col].toString().equals(which))
-                        return +10;
 
-                    else if (board[row][col].toString() != null)
+                    if (board[row][col] == null) {
+                    } else if (board[row][col].toString().equals(which))
+                        return +10;
+                    else
                         return -10;
                 }
             }
 
         }
-      // Checking for diagonals going from top right corner to bottom left corner.
+        // Checking for diagonals going from top right corner to bottom left corner.
         for (int row = 0; row < 6; row++) {
             for (int col = 9; col >= 4; col--) {
                 if (board[row][col] == board[row + 1][col - 1] && board[row + 1][col - 1] == board[row + 2][col - 2] && board[row + 2][col - 2] == board[row + 3][col - 3] &&
                         board[row + 3][col - 3] == board[row + 4][col - 4]) {
-                    if (board[row][col].toString().equals(which))
-                        return +10;
 
-                    else if (board[row][col].toString() != null)
+                    if (board[row][col] == null) {
+                    } else if (board[row][col].toString().equals(which))
+                        return +10;
+                    else
                         return -10;
                 }
             }
