@@ -34,6 +34,101 @@ public class Board {
         return board;
     }
 
+    public BoardCell attackMove(Player player){
+        // Checking for Rows for X or O victory.
+        for (int row = 0; row < 10; row++) {
+            int i = 0;
+            while (i <= 8) {
+                if (board[row][i] == board[row][i + 1] && board[row][i] != null) {
+                    if (board[row][i].equals(player)) {
+                        if (i > 0) {
+                            if (i < 8) {
+                                if (board[row][i - 1] == null)
+                                    return new BoardCell(row, i - 1, null);
+                                if (board[row][i + 2] == null) {
+                                    return new BoardCell(row, i + 2, null);
+                                }
+                            } else {
+                                if (board[row][i - 1] == null)
+                                    return new BoardCell(row, i - 1, null);
+                            }
+                        } else {
+                            if (board[row][i + 2] == null) {
+                                return new BoardCell(row, i + 2, null);
+                            }
+                        }
+                    }
+                }
+                i++;
+            }
+        }
+
+
+        // Checking for Columns for X or O victory.
+        for (int col = 0; col < 10; col++) {
+            int i = 0;
+            while (i <= 8) {
+                if (board[i][col] == board[i + 1][col]  && board[i][col] != null) {
+                    if (board[i][col].equals(player)) {
+                        if (i > 0) {
+                            if (i < 8) {
+                                if (board[i - 1][col] == null)
+                                    return new BoardCell(i - 1, col, null);
+                                if (board[i + 2][col] == null) {
+                                    return new BoardCell(i + 2, col, null);
+                                }
+                            } else {
+                                if (board[i - 1][col] == null)
+                                    return new BoardCell(i - 1, col, null);
+                            }
+                        } else {
+                            if (board[i + 2][col] == null) {
+                                return new BoardCell(i + 2, col, null);
+                            }
+                        }
+                    }
+                }
+                i++;
+            }
+        }
+        // Checking for diagonals going from top left corner to bottom right corner.
+        for (int row = 0; row < 9; row++) {
+            for (int col = 0; col < 9; col++) {
+                if (board[row][col] == board[row + 1][col + 1] && board[row][col] != null) {
+                    if (board[row][col].equals(player)) {
+                        if (row > 0){
+                            if (row < 8){
+                                if (col > 0){
+                                    if (col < 8){
+                                        if (board[row-1][col-1] == null)
+                                            return new BoardCell(row - 1, col - 1, null);
+
+                                        if (board[row+2][col+2] == null)
+                                            return new BoardCell(row +2, col +2, null);
+                                    } else {
+                                        if (board[row-1][col-1] == null)
+                                            return new BoardCell(row - 1, col - 1, null);
+                                    }
+                                } else {
+                                    if (board[row+2][col+2] == null)
+                                        return new BoardCell(row +2, col +2, null);
+                                }
+                            } else {
+                                if (board[row-1][col-1] == null)
+                                    return new BoardCell(row - 1, col - 1, null);
+                            }
+                        } else {
+                            if (board[row+2][col+2] == null)
+                                return new BoardCell(row +2, col +2, null);
+                        }
+                    }
+                }
+            }
+
+        }
+        return null;
+    }
+
     @SuppressWarnings("Duplicates")
     public BoardCell evaluate(Player player) {
         // Checking for Rows for X or O victory.

@@ -28,19 +28,19 @@ public class GamePlayer {
 
     private BoardCell getCellForNextMove() {
         // TODO: Please implement it.
-        BoardCell defensiveMove = board.evaluate(player.getOther());
+        BoardCell nextMove = board.evaluate(player.getOther());
 
 
-        if (defensiveMove == null){
-            BoardCell ofensiveMove = board.evaluate(player);
-            defensiveMove = ofensiveMove;
+        if (nextMove == null){
+
+            nextMove = board.attackMove(player);
         }
 
-        if(defensiveMove == null){
+        if(nextMove == null){
             return board.getFirstEmptyCell();
         } else {
-            defensiveMove.setPlayer(player);
-            return defensiveMove;
+            nextMove.setPlayer(player);
+            return nextMove;
         }
 
 //=======
