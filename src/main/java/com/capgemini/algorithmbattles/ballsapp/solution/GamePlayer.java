@@ -29,7 +29,20 @@ public class GamePlayer {
     private BoardCell getCellForNextMove() {
         // TODO: Please implement it.
 
-        int bestVal = -1000;
+        BoardCell defensiveMove = board.evaluate(player.getOther());
+
+        if (defensiveMove == null){
+            BoardCell ofensiveMove = board.evaluate(player);
+            defensiveMove = ofensiveMove;
+        }
+
+        if(defensiveMove == null){
+            return board.getFirstEmptyCell();
+        } else {
+            return defensiveMove;
+        }
+
+        /*int bestVal = -1000;
         BoardCell bestCell = new BoardCell(-1, -1, player);
 
         Player[][] b = board.getBoard();
@@ -62,10 +75,10 @@ public class GamePlayer {
                 }
             }
         }
-        return bestCell;
+        return bestCell;*/
     }
 
-    private int minimax(Board b, int depth, boolean isMax, int alpha, int beta) {
+   /* private int minimax(Board b, int depth, boolean isMax, int alpha, int beta) {
         int score = b.evaluate(player);
 
         //Player[][] matrix = b.getBoard();
@@ -102,9 +115,9 @@ public class GamePlayer {
                         best = Math.max(best,
                                 minimax(b, depth + 1, isMax, alpha, beta));
 
-                        /*alpha = Math.max(alpha, best);
+                        *//*alpha = Math.max(alpha, best);
                         if (beta <= alpha)
-                            return best;*/
+                            return best;*//*
 
                         // Undo the move
                         b.remove(i, j);
@@ -130,9 +143,9 @@ public class GamePlayer {
                         // the minimum value
                         best = Math.min(best,
                                 minimax(b, depth + 1, isMax, alpha, beta));
-                        /*beta = Math.min( beta, best);
+                        *//*beta = Math.min( beta, best);
                         if (beta <= alpha)
-                            return best;*/
+                            return best;*//*
 
                         // Undo the move
                         b.remove(i, j);
@@ -141,7 +154,7 @@ public class GamePlayer {
             }
             return best;
         }
-    }
+    }*/
 
 
     /**
