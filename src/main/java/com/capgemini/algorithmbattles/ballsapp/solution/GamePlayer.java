@@ -100,7 +100,7 @@ public class GamePlayer {
                         // Call minimax recursively and choose
                         // the maximum value
                         best = Math.max(best,
-                                minimax(b, depth + 1, !isMax, alpha, beta));
+                                minimax(b, depth + 1, isMax, alpha, beta));
 
                         /*alpha = Math.max(alpha, best);
                         if (beta <= alpha)
@@ -129,7 +129,7 @@ public class GamePlayer {
                         // Call minimax recursively and choose
                         // the minimum value
                         best = Math.min(best,
-                                minimax(b, depth + 1, !isMax, alpha, beta));
+                                minimax(b, depth + 1, isMax, alpha, beta));
                         /*beta = Math.min( beta, best);
                         if (beta <= alpha)
                             return best;*/
