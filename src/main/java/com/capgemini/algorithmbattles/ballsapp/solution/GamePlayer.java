@@ -46,7 +46,7 @@ public class GamePlayer {
 
                     // compute evaluation function for this
                     // move.
-                    int moveVal = minimax(board, 0, false, -10000, 10000);
+                    int moveVal = minimax(board, 0, true, -10000, 10000);
 
                     // Undo the move
                     board.remove(i, j);
@@ -95,7 +95,7 @@ public class GamePlayer {
                     // Check if cell is empty
                     if (matrix[i][j] == null) {
                         // Make the move
-                        matrix[i][j] = player;
+                        b.placeMove(new BoardCell(i, j, player));
 
                         // Call minimax recursively and choose
                         // the maximum value
@@ -107,7 +107,7 @@ public class GamePlayer {
                             return best;
 
                         // Undo the move
-                        matrix[i][j] = null;
+                        b.remove(i, j);
                     }
                 }
             }
@@ -124,7 +124,7 @@ public class GamePlayer {
                     // Check if cell is empty
                     if (matrix[i][j] == null) {
                         // Make the move
-                        matrix[i][j] = player.getOther();
+                        b.placeMove(new BoardCell(i, j, player));
 
                         // Call minimax recursively and choose
                         // the minimum value
@@ -135,7 +135,7 @@ public class GamePlayer {
                             return best;
 
                         // Undo the move
-                        matrix[i][j] = null;
+                        b.remove(i, j);
                     }
                 }
             }
