@@ -46,7 +46,7 @@ public class GamePlayer {
 
                     // compute evaluation function for this
                     // move.
-                    int moveVal = minimax(board, 0, true, -10000, 10000);
+                    int moveVal = minimax(board, 0, true, -1000000, 1000000);
 
                     // Undo the move
                     board.remove(i, j);
@@ -68,17 +68,17 @@ public class GamePlayer {
     private int minimax(Board b, int depth, boolean isMax, int alpha, int beta) {
         int score = b.evaluate(player);
 
-        Player[][] matrix = b.getBoard();
+        //Player[][] matrix = b.getBoard();
 
         // If Maximizer has won the game return his/her
         // evaluated score
         if (score == 10)
-            return score - depth;
+            return score;
 
         // If Minimizer has won the game return his/her
         // evaluated score
         if (score == -10)
-            return score + depth;
+            return score ;
 
         // If there are no more moves and no winner then
         // it is a tie
@@ -93,7 +93,7 @@ public class GamePlayer {
             for (int i = 0; i < 10; i++) {
                 for (int j = 0; j < 10; j++) {
                     // Check if cell is empty
-                    if (matrix[i][j] == null) {
+                    if (b.getPlayerAt(i, j) == null) {
                         // Make the move
                         b.placeMove(new BoardCell(i, j, player));
 
@@ -102,9 +102,9 @@ public class GamePlayer {
                         best = Math.max(best,
                                 minimax(b, depth + 1, !isMax, alpha, beta));
 
-                        alpha = Math.max(alpha, best);
+                        /*alpha = Math.max(alpha, best);
                         if (beta <= alpha)
-                            return best;
+                            return best;*/
 
                         // Undo the move
                         b.remove(i, j);
@@ -122,17 +122,17 @@ public class GamePlayer {
             for (int i = 0; i < 10; i++) {
                 for (int j = 0; j < 10; j++) {
                     // Check if cell is empty
-                    if (matrix[i][j] == null) {
+                    if (b.getPlayerAt(i, j) == null) {
                         // Make the move
-                        b.placeMove(new BoardCell(i, j, player));
+                        b.placeMove(new BoardCell(i, j, player.getOther()));
 
                         // Call minimax recursively and choose
                         // the minimum value
                         best = Math.min(best,
                                 minimax(b, depth + 1, !isMax, alpha, beta));
-                        beta = Math.min( beta, best);
+                        /*beta = Math.min( beta, best);
                         if (beta <= alpha)
-                            return best;
+                            return best;*/
 
                         // Undo the move
                         b.remove(i, j);

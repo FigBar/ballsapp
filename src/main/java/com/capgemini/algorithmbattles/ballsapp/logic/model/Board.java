@@ -15,6 +15,10 @@ public class Board {
         board[x][y] = null;
     }
 
+    public Player getPlayerAt(int x, int y){
+        return board[x][y];
+    }
+
     public BoardCell getFirstEmptyCell() {
         for (int i = 0; i < SIZE; i++) {
             for (int j = 0; j < SIZE; j++) {
