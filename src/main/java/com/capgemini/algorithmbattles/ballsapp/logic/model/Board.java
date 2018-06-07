@@ -225,8 +225,31 @@ public class Board {
         // Checking for diagonals going from top right corner to bottom left corner.
         for (int row = 0; row < 8; row++) {
             for (int col = 9; col >= 2; col--) {
-                    if (board[row][col] == board[row + 1][col - 1] && board[row + 1][col - 1] == board[row + 2][col - 2] && board[row][col] != null) {
-
+                if (board[row][col] == board[row + 1][col - 1] && board[row + 1][col - 1] == board[row + 2][col - 2] && board[row][col] != null) {
+                    if (board[row][col].equals(player)) {
+                        if (row > 0){
+                            if (row < 8){
+                                if (col < 9){
+                                    if (col > 2){
+                                        if (board[row+3][col-3] == null)
+                                            return new BoardCell(row + 3, col - 3, null);
+                                    } else {
+                                        if (board[row-1][col+1] == null)
+                                            return new BoardCell(row - 1, col + 1, null);
+                                    }
+                                } else {
+                                    if (board[row+3][col-3] == null)
+                                        return new BoardCell(row + 3, col - 3, null);
+                                }
+                            } else {
+                                if (board[row-1][col+1] == null)
+                                    return new BoardCell(row - 1, col + 1, null);
+                            }
+                        }else{
+                            if (board[row+3][col-3] == null)
+                                return new BoardCell(row + 3, col - 3, null);
+                        }
+                    }
                 }
             }
         }
