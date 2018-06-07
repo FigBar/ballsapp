@@ -28,7 +28,6 @@ public class GamePlayer {
 
     private BoardCell getCellForNextMove() {
         // TODO: Please implement it.
-
         BoardCell defensiveMove = board.evaluate(player.getOther());
 
 
@@ -44,6 +43,16 @@ public class GamePlayer {
             return defensiveMove;
         }
 
+//=======
+//        BoardCell boardCell = board.evaluate(player);
+//        if (boardCell != null)
+//            return boardCell;
+//        boardCell = board.evaluate(player.getOther());
+//        if (boardCell != null)
+//            return boardCell;
+//        return board.getFirstEmptyCell();
+//    }
+//>>>>>>> martin
         /*int bestVal = -1000;
         BoardCell bestCell = new BoardCell(-1, -1, player);
 
