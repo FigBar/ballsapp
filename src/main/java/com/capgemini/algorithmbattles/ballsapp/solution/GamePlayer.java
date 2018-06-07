@@ -108,7 +108,7 @@ public class GamePlayer {
                         // Call minimax recursively and choose
                         // the maximum value
                         best = Math.max(best,
-                                minimax(b, depth + 1, !isMax, alpha, beta));
+                                minimax(b, depth + 1, isMax, alpha, beta));
 
                         // Undo the move
                         b.remove(i, j);
