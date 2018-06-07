@@ -22,4 +22,8 @@ public enum Player {
     return "player1".equals(player) ? PLAYER_1 : PLAYER_2;
   }
 
+  public Player getOther(){
+    return "player1".equals(this.toString()) ? PLAYER_1 : PLAYER_2;
+  }
+
 }

@@ -26,7 +26,7 @@ public class Board {
         return board;
     }
 
-    private int evaluate(Player player) {
+    public int evaluate(Player player) {
         String which = player.toString();
         // Checking for Rows for X or O victory.
         int i = 0;
@@ -61,25 +61,21 @@ public class Board {
 
             }
         }
-        
+
         //Diagonals
-        if (board[0][0]==board[1][1] && board[1][1]==board[2][2])
-        {
-            if (board[0][0]==player)
+        if (board[0][0] == board[1][1] && board[1][1] == board[2][2]) {
+            if (board[0][0] == player)
                 return +10;
-            else if (board[0][0]==opponent)
+            else if (board[0][0] == opponent)
                 return -10;
         }
 
-        if (board[0][2]==board[1][1] && board[1][1]==board[2][0])
-        {
-            if (board[0][2]==player)
+        if (board[0][2] == board[1][1] && board[1][1] == board[2][0]) {
+            if (board[0][2] == player)
                 return +10;
-            else if (board[0][2]==opponent)
+            else if (board[0][2] == opponent)
                 return -10;
         }
-
-
     }
 
     public boolean isGameFinished() {
