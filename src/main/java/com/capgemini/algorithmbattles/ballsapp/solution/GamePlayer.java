@@ -28,8 +28,15 @@ public class GamePlayer {
 
     private BoardCell getCellForNextMove() {
         // TODO: Please implement it.
-
-        int bestVal = -1000;
+        BoardCell boardCell = board.evaluate(player);
+        if (boardCell != null)
+            return boardCell;
+        boardCell = board.evaluate(player.getOther());
+        if (boardCell != null)
+            return boardCell;
+        return board.getFirstEmptyCell();
+    }
+        /*int bestVal = -1000;
         BoardCell bestCell = new BoardCell(-1, -1, player);
 
         Player[][] b = board.getBoard();
@@ -102,9 +109,9 @@ public class GamePlayer {
                         best = Math.max(best,
                                 minimax(b, depth + 1, isMax, alpha, beta));
 
-                        /*alpha = Math.max(alpha, best);
+                        *//*alpha = Math.max(alpha, best);
                         if (beta <= alpha)
-                            return best;*/
+                            return best;*//*
 
                         // Undo the move
                         b.remove(i, j);
@@ -130,9 +137,9 @@ public class GamePlayer {
                         // the minimum value
                         best = Math.min(best,
                                 minimax(b, depth + 1, isMax, alpha, beta));
-                        /*beta = Math.min( beta, best);
+                        *//*beta = Math.min( beta, best);
                         if (beta <= alpha)
-                            return best;*/
+                            return best;*//*
 
                         // Undo the move
                         b.remove(i, j);
@@ -141,7 +148,7 @@ public class GamePlayer {
             }
             return best;
         }
-    }
+    }*/
 
 
     /**
