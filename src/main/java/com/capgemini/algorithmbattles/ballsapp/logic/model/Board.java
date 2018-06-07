@@ -136,28 +136,28 @@ public class Board {
         for (int row = 0; row < 8; row++) {
             for (int col = 9; col >= 2; col--) {
                 if (board[row][col] == board[row + 1][col - 1] && board[row + 1][col - 1] == board[row + 2][col - 2]) {
-                    if(row > 0 && col > 0){
-                        if (row < 7 && col < 7){
-                            if (board[row-1][col-1].toString().equals("player1") && board[row+3][col+3].toString().equals("player1")) {
-                                continue;
+                    if(row > 0 && col < 9){
+                        if (row < 7 && col > 2){
+                            if (board[row-1][col+1].toString().equals("player1") && board[row+3][col-3].toString().equals("player1")) {
+
                             }else{
-                                if (board[row-1][col-1].toString().equals("player1")) {
-                                    return new BoardCell(row+3, col+3, null);
+                                if (board[row-1][col+1].toString().equals("player1")) {
+                                    return new BoardCell(row+3, col-3, null);
                                 } else
-                                    return new BoardCell( row-1, col-1, null);
+                                    return new BoardCell( row-1, col+1, null);
                             }
                         } else {
-                            if (board[row - 1][col - 1].toString().equals("player1")) {
-                                continue;
+                            if (board[row - 1][col + 1].toString().equals("player1")) {
+
                             } else {
-                                return new BoardCell( row-1, col-1, null);
+                                return new BoardCell( row-1, col+1, null);
                             }
                         }
                     } else {
-                        if (board[row +3][col +3].toString().equals("player1")) {
+                        if (board[row +3][col -3].toString().equals("player1")) {
                             continue;
                         } else {
-                            return new BoardCell( row+3, col+3, null);
+                            return new BoardCell( row+3, col-3, null);
                         }
                     }
                 }
