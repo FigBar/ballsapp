@@ -32,7 +32,7 @@ public class GamePlayer {
         int bestVal = -1000;
         BoardCell bestCell = new BoardCell(-1, -1, player);
 
-        Player [][] b = board.getBoard();
+        Player[][] b = board.getBoard();
 
         // Traverse all cells, evalutae minimax function for
         // all empty cells. And return the cell with optimal
@@ -46,7 +46,7 @@ public class GamePlayer {
 
                     // compute evaluation function for this
                     // move.
-                    int moveVal = minimax(board, 0, false);
+                    int moveVal = minimax(board, 0, false, -10000, 10000);
 
                     // Undo the move
                     b[i][j] = null;
@@ -65,10 +65,10 @@ public class GamePlayer {
         return bestCell;
     }
 
-    private int minimax(Board b, int depth, boolean isMax) {
+    private int minimax(Board b, int depth, boolean isMax, int alpha, int beta) {
         int score = b.evaluate(player);
 
-        Player [][] matrix = b.getBoard();
+        Player[][] matrix = b.getBoard();
 
         // If Maximizer has won the game return his/her
         // evaluated score
@@ -100,7 +100,11 @@ public class GamePlayer {
                         // Call minimax recursively and choose
                         // the maximum value
                         best = Math.max(best,
-                                minimax(b, depth + 1, !isMax));
+                                minimax(b, depth + 1, !isMax, alpha, beta));
+
+                        alpha = Math.max(alpha, best);
+                        if (beta <= alpha)
+                            return best;
 
                         // Undo the move
                         matrix[i][j] = null;
@@ -125,7 +129,10 @@ public class GamePlayer {
                         // Call minimax recursively and choose
                         // the minimum value
                         best = Math.min(best,
-                                minimax(b, depth + 1, !isMax));
+                                minimax(b, depth + 1, !isMax, alpha, beta));
+                        beta = Math.min( beta, best);
+                        if (beta <= alpha)
+                            return best;
 
                         // Undo the move
                         matrix[i][j] = null;
