@@ -3,7 +3,7 @@ package com.capgemini.algorithmbattles.ballsapp.logic.model;
 import com.capgemini.algorithmbattles.ballsapp.logic.BoardDrawer;
 
 public class Board {
-
+    public int i;
     private static final int SIZE = 10;
     private Player[][] board = new Player[SIZE][SIZE];
 

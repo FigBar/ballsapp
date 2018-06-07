@@ -9,9 +9,11 @@ public class GamePlayer {
 
     private Player player;
     private Board board = new Board();
+    int numOfMoves;
 
     public GamePlayer(Player player) {
         this.player = player;
+        numOfMoves= 0;
     }
 
     /**
@@ -28,6 +30,12 @@ public class GamePlayer {
 
     private BoardCell getCellForNextMove() {
         // TODO: Please implement it.
+
+        BoardCell cell = board.getFirstEmptyCell();
+        if(numOfMoves<40){
+            numOfMoves++;
+            return board.getFirstEmptyCell();
+        }
 
         int bestVal = -1000;
         BoardCell bestCell = new BoardCell(-1, -1, player);
@@ -102,16 +110,16 @@ public class GamePlayer {
                         best = Math.max(best,
                                 minimax(b, depth + 1, !isMax, alpha, beta));
 
-                        /*alpha = Math.max(alpha, best);
-                        if (beta <= alpha)
-                            return best;*/
-
                         // Undo the move
                         b.remove(i, j);
+
+                        alpha = Math.max(alpha, best);
+                        if (beta <= alpha)
+                            return alpha;
                     }
                 }
             }
-            return best;
+            return alpha;
         }
 
         // If this minimizer's move
@@ -130,16 +138,19 @@ public class GamePlayer {
                         // the minimum value
                         best = Math.min(best,
                                 minimax(b, depth + 1, !isMax, alpha, beta));
-                        /*beta = Math.min( beta, best);
-                        if (beta <= alpha)
-                            return best;*/
+
+                        //return beta
 
                         // Undo the move
                         b.remove(i, j);
+
+                        beta = Math.min( beta, best);
+                        if (beta <= alpha)
+                            return beta;
                     }
                 }
             }
-            return best;
+            return beta;
         }
     }
 
