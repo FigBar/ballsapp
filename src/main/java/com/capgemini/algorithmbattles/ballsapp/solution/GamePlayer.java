@@ -31,6 +31,7 @@ public class GamePlayer {
 
         BoardCell defensiveMove = board.evaluate(player.getOther());
 
+
         if (defensiveMove == null){
             BoardCell ofensiveMove = board.evaluate(player);
             defensiveMove = ofensiveMove;
@@ -39,6 +40,7 @@ public class GamePlayer {
         if(defensiveMove == null){
             return board.getFirstEmptyCell();
         } else {
+            defensiveMove.setPlayer(player);
             return defensiveMove;
         }
 
