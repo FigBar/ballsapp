@@ -37,9 +37,8 @@ public class Board {
     @SuppressWarnings("Duplicates")
     public BoardCell evaluate(Player player) {
         // Checking for Rows for X or O victory.
-        int i = 0;
         for (int row = 0; row < 10; row++) {
-            i = 0;
+            int i = 0;
             while (i <= 7) {
                 if (board[row][i] == board[row][i + 1] && board[row][i + 1] == board[row][i + 2] && board[row][i].toString().equals("player2")) {
                     if (i>0 && i<7) {
@@ -69,11 +68,10 @@ public class Board {
             }
         }
 
-        i = 0;
 
         // Checking for Columns for X or O victory.
         for (int col = 0; col < 10; col++) {
-            i = 0;
+            int i = 0;
             while (i <= 7) {
                 if (board[i][col] == board[i + 1][col] && board[i + 1][col] == board[i + 2][col] && board[i].toString().equals("player2")) {
                     if (i>0 && i<7) {
@@ -106,7 +104,30 @@ public class Board {
         for (int row = 0; row < 8; row++) {
             for (int col = 0; col < 8; col++) {
                 if (board[row][col] == board[row + 1][col + 1] && board[row + 1][col + 1] == board[row + 2][col + 2]) {
+                    if(row > 0 && col > 0){
+                        if (row < 7 && col < 7){
+                            if (board[row-1][col-1].toString().equals("player1") && board[row+3][col+3].toString().equals("player1")) {
 
+                            }else{
+                                if (board[row-1][col-1].toString().equals("player1")) {
+                                    return new BoardCell(row+3, col+3, null);
+                                } else
+                                    return new BoardCell( row-1, col-1, null);
+                            }
+                        } else {
+                            if (board[row - 1][col - 1].toString().equals("player1")) {
+
+                            } else {
+                                return new BoardCell( row-1, col-1, null);
+                            }
+                        }
+                    } else {
+                        if (board[row +3][col +3].toString().equals("player1")) {
+
+                        } else {
+                            return new BoardCell( row+3, col+3, null);
+                        }
+                    }
                 }
             }
 
@@ -115,8 +136,30 @@ public class Board {
         for (int row = 0; row < 8; row++) {
             for (int col = 9; col >= 2; col--) {
                 if (board[row][col] == board[row + 1][col - 1] && board[row + 1][col - 1] == board[row + 2][col - 2]) {
-
-
+                    if(row > 0 && col > 0){
+                        if (row < 7 && col < 7){
+                            if (board[row-1][col-1].toString().equals("player1") && board[row+3][col+3].toString().equals("player1")) {
+                                continue;
+                            }else{
+                                if (board[row-1][col-1].toString().equals("player1")) {
+                                    return new BoardCell(row+3, col+3, null);
+                                } else
+                                    return new BoardCell( row-1, col-1, null);
+                            }
+                        } else {
+                            if (board[row - 1][col - 1].toString().equals("player1")) {
+                                continue;
+                            } else {
+                                return new BoardCell( row-1, col-1, null);
+                            }
+                        }
+                    } else {
+                        if (board[row +3][col +3].toString().equals("player1")) {
+                            continue;
+                        } else {
+                            return new BoardCell( row+3, col+3, null);
+                        }
+                    }
                 }
             }
 
