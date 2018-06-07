@@ -25,19 +25,23 @@ public class Board {
     public Player[][] getBoard() {
         return board;
     }
+
     @SuppressWarnings("Duplicates")
     public int evaluate(Player player) {
         String which = player.toString();
         // Checking for Rows for X or O victory.
         int i = 0;
         for (int row = 0; row < 10; row++) {
+            i = 0;
             while (i <= 5) {
                 if (board[row][i] == board[row][i + 1] &&
                         board[row][i + 1] == board[row][i + 2] && board[row][i + 2] == board[row][i + 3] && board[row][i + 3] == board[row][i + 4]) {
 
-                    if (board[row][i] == null)
+                    if (board[row][i] == null) {
                         i++;
-                    else if (board[row][i].toString().equals(which))
+                        continue;
+
+                    } else if (board[row][i].toString().equals(which))
                         return +10;
                     else
                         return -10;
@@ -51,13 +55,15 @@ public class Board {
 
         // Checking for Columns for X or O victory.
         for (int col = 0; col < 10; col++) {
+            i = 0;
             while (i <= 5) {
                 if (board[i][col] == board[i + 1][col] && board[i + 1][col] == board[i + 2][col] &&
                         board[i + 2][col] == board[i + 3][col] && board[i + 3][col] == board[i + 4][col]) {
 
-                    if (board[i][col] == null)
+                    if (board[i][col] == null) {
                         i++;
-                    else if (board[i][col].toString().equals(which))
+                        continue;
+                    } else if (board[i][col].toString().equals(which))
                         return +10;
                     else
                         return -10;
