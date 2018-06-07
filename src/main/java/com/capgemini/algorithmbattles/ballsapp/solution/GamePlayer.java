@@ -42,14 +42,14 @@ public class GamePlayer {
                 // Check if cell is empty
                 if (b[i][j] == null) {
                     // Make the move
-                    b[i][j] = player;
+                    board.placeMove(new BoardCell(i,j, player));
 
                     // compute evaluation function for this
                     // move.
                     int moveVal = minimax(board, 0, false, -10000, 10000);
 
                     // Undo the move
-                    b[i][j] = null;
+                    board.remove(i, j);
 
                     // If the value of the current move is
                     // more than the best value, then update
@@ -73,12 +73,12 @@ public class GamePlayer {
         // If Maximizer has won the game return his/her
         // evaluated score
         if (score == 10)
-            return score;
+            return score - depth;
 
         // If Minimizer has won the game return his/her
         // evaluated score
         if (score == -10)
-            return score;
+            return score + depth;
 
         // If there are no more moves and no winner then
         // it is a tie

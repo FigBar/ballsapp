@@ -11,6 +11,10 @@ public class Board {
         board[move.getX()][move.getY()] = move.getPlayer();
     }
 
+    public void remove(int x, int y){
+        board[x][y] = null;
+    }
+
     public BoardCell getFirstEmptyCell() {
         for (int i = 0; i < SIZE; i++) {
             for (int j = 0; j < SIZE; j++) {

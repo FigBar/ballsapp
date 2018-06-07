@@ -23,7 +23,7 @@ public enum Player {
   }
 
   public Player getOther(){
-    return "player1".equals(this.toString()) ? PLAYER_1 : PLAYER_2;
+    return "player1".equals(this.toString()) ? PLAYER_2 : PLAYER_1;
   }
 
 }
