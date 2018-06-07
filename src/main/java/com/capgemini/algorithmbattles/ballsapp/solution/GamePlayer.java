@@ -33,6 +33,7 @@ public class GamePlayer {
     return firstEmptyCell;
   }
 
+
   /**
    * The opponent made the move passed in param.
    *
