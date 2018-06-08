@@ -10,10 +10,12 @@ public class GamePlayer {
     private Player player;
     private Board board = new Board();
     int numOfMoves;
+    int maxDepth;
 
     public GamePlayer(Player player) {
         this.player = player;
-        numOfMoves= 0;
+        numOfMoves = 0;
+        maxDepth = 1;
     }
 
     /**
@@ -30,19 +32,15 @@ public class GamePlayer {
 
     private BoardCell getCellForNextMove() {
         // TODO: Please implement it.
-
-        BoardCell cell = board.getFirstEmptyCell();
-        if(numOfMoves<40){
-            numOfMoves++;
-            return board.getFirstEmptyCell();
-        }
+        numOfMoves++;
+        if (numOfMoves % 10 == 0) maxDepth++;
 
         int bestVal = -1000;
         BoardCell bestCell = new BoardCell(-1, -1, player);
 
         Player[][] b = board.getBoard();
 
-        // Traverse all cells, evalutae minimax function for
+        // Traverse all cells, evaluate minimax function for
         // all empty cells. And return the cell with optimal
         // value.
         for (int i = 0; i < 10; i++) {
@@ -50,11 +48,12 @@ public class GamePlayer {
                 // Check if cell is empty
                 if (b[i][j] == null) {
                     // Make the move
-                    board.placeMove(new BoardCell(i,j, player));
+                    BoardCell current = new BoardCell(i, j, player);
+                    board.placeMove(current);
 
                     // compute evaluation function for this
                     // move.
-                    int moveVal = minimax(board, 0, true, -1000000, 1000000);
+                    int moveVal = minimax(board, 0, false, -1000000, 1000000);
 
                     // Undo the move
                     board.remove(i, j);
@@ -80,18 +79,26 @@ public class GamePlayer {
 
         // If Maximizer has won the game return his/her
         // evaluated score
-        if (score == 10)
+        if (score == 100)
             return score;
 
         // If Minimizer has won the game return his/her
         // evaluated score
-        if (score == -10)
-            return score ;
+        if (score == -100)
+            return score;
 
         // If there are no more moves and no winner then
         // it is a tie
-        if (b.getFirstEmptyCell() == null)
+        if (b.isFull())
             return 0;
+
+        if (depth == this.maxDepth) {
+            if (isMax)
+                return b.scoreGameState(player);
+            else
+                return - b.scoreGameState(player.getOther());
+        }
+
 
         // If this maximizer's move
         if (isMax) {
@@ -103,23 +110,24 @@ public class GamePlayer {
                     // Check if cell is empty
                     if (b.getPlayerAt(i, j) == null) {
                         // Make the move
-                        b.placeMove(new BoardCell(i, j, player));
+                        BoardCell current = new BoardCell(i, j, player);
+                        b.placeMove(current);
 
                         // Call minimax recursively and choose
                         // the maximum value
                         best = Math.max(best,
-                                minimax(b, depth + 1, isMax, alpha, beta));
+                                minimax(b, depth + 1, !isMax, alpha, beta));
 
                         // Undo the move
                         b.remove(i, j);
 
-                        alpha = Math.max(alpha, best);
-                        if (beta <= alpha)
-                            return alpha;
+//                        alpha = Math.max(alpha, best);
+//                        if (beta <= alpha)
+//                            return alpha;
                     }
                 }
             }
-            return alpha;
+            return best;
         }
 
         // If this minimizer's move
@@ -132,7 +140,8 @@ public class GamePlayer {
                     // Check if cell is empty
                     if (b.getPlayerAt(i, j) == null) {
                         // Make the move
-                        b.placeMove(new BoardCell(i, j, player.getOther()));
+                        BoardCell current = new BoardCell(i, j, player);
+                        b.placeMove(current);
 
                         // Call minimax recursively and choose
                         // the minimum value
@@ -144,13 +153,13 @@ public class GamePlayer {
                         // Undo the move
                         b.remove(i, j);
 
-                        beta = Math.min( beta, best);
-                        if (beta <= alpha)
-                            return beta;
+//                        beta = Math.min(beta, best);
+//                        if (beta <= alpha)
+//                            return beta;
                     }
                 }
             }
-            return beta;
+            return best;
         }
     }
 
