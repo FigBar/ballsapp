@@ -15,7 +15,7 @@ public class GamePlayer {
     public GamePlayer(Player player) {
         this.player = player;
         numOfMoves = 0;
-        maxDepth = 1;
+        maxDepth = 100;
     }
 
     /**
@@ -33,17 +33,35 @@ public class GamePlayer {
     private BoardCell getCellForNextMove() {
         // TODO: Please implement it.
         numOfMoves++;
-        if (numOfMoves % 10 == 0) maxDepth++;
+        maxDepth=100;
+        int rows = 10;
+        if(numOfMoves == 1){
+            rows = 5;
+        }
+        if (0 < numOfMoves && numOfMoves < 25)
+            maxDepth = 3;
+        if (25 <= numOfMoves && numOfMoves < 34)
+            maxDepth = 4;
+        if (34 <= numOfMoves && numOfMoves < 38)
+            maxDepth = 5;
+        if (38 <= numOfMoves && numOfMoves < 40)
+            maxDepth = 6;
+        if (40 <= numOfMoves && numOfMoves < 42)
+            maxDepth = 7;
+        if (42 <= numOfMoves && numOfMoves < 44)
+            maxDepth = 8;
 
-        int bestVal = -1000;
+        int bestVal = -10000;
         BoardCell bestCell = new BoardCell(-1, -1, player);
 
         Player[][] b = board.getBoard();
 
+
+
         // Traverse all cells, evaluate minimax function for
         // all empty cells. And return the cell with optimal
         // value.
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < rows; i++) {
             for (int j = 0; j < 10; j++) {
                 // Check if cell is empty
                 if (b[i][j] == null) {
@@ -53,7 +71,7 @@ public class GamePlayer {
 
                     // compute evaluation function for this
                     // move.
-                    int moveVal = minimax(board, 0, false, -1000000, 1000000);
+                    int moveVal = minimax(board, 0, true, -1000000, 1000000);
 
                     // Undo the move
                     board.remove(i, j);
@@ -75,17 +93,16 @@ public class GamePlayer {
     private int minimax(Board b, int depth, boolean isMax, int alpha, int beta) {
         int score = b.evaluate(player);
 
-        //Player[][] matrix = b.getBoard();
 
-        // If Maximizer has won the game return his/her
+        // If Maximizer has won the game return his
         // evaluated score
-        if (score == 100)
-            return score;
+        if (score == 1000)
+            return score - depth;
 
         // If Minimizer has won the game return his/her
         // evaluated score
-        if (score == -100)
-            return score;
+        if (score == -1000)
+            return score + depth;
 
         // If there are no more moves and no winner then
         // it is a tie
@@ -96,7 +113,7 @@ public class GamePlayer {
             if (isMax)
                 return b.scoreGameState(player);
             else
-                return - b.scoreGameState(player.getOther());
+                return -b.scoreGameState(player.getOther());
         }
 
 
