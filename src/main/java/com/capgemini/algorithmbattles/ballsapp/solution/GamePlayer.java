@@ -35,21 +35,21 @@ public class GamePlayer {
         numOfMoves++;
         maxDepth=100;
         int rows = 10;
-        if(numOfMoves == 1){
+        /*if(numOfMoves == 1){
             rows = 5;
         }
         if (0 < numOfMoves && numOfMoves < 25)
-            maxDepth = 3;
-        if (25 <= numOfMoves && numOfMoves < 34)
-            maxDepth = 4;
-        if (34 <= numOfMoves && numOfMoves < 38)
             maxDepth = 5;
-        if (38 <= numOfMoves && numOfMoves < 40)
+        if (25 <= numOfMoves && numOfMoves < 34)
             maxDepth = 6;
-        if (40 <= numOfMoves && numOfMoves < 42)
+        if (34 <= numOfMoves && numOfMoves < 38)
             maxDepth = 7;
+        if (38 <= numOfMoves && numOfMoves < 40)
+            maxDepth = 9;
+        if (40 <= numOfMoves && numOfMoves < 42)
+            maxDepth = 10;
         if (42 <= numOfMoves && numOfMoves < 44)
-            maxDepth = 8;
+            maxDepth = 11;*/
 
         int bestVal = -10000;
         BoardCell bestCell = new BoardCell(-1, -1, player);
@@ -113,7 +113,7 @@ public class GamePlayer {
             if (isMax)
                 return b.scoreGameState(player);
             else
-                return -b.scoreGameState(player.getOther());
+                return -b.scoreGameState(player);
         }
 
 
@@ -138,9 +138,9 @@ public class GamePlayer {
                         // Undo the move
                         b.remove(i, j);
 
-//                        alpha = Math.max(alpha, best);
-//                        if (beta <= alpha)
-//                            return alpha;
+                        alpha = Math.max(alpha, best);
+                        if (beta <= alpha)
+                           return best;//?
                     }
                 }
             }
@@ -170,9 +170,9 @@ public class GamePlayer {
                         // Undo the move
                         b.remove(i, j);
 
-//                        beta = Math.min(beta, best);
-//                        if (beta <= alpha)
-//                            return beta;
+                        beta = Math.min(beta, best);
+                        if (beta <= alpha)
+                            return best;//?
                     }
                 }
             }
