@@ -15,7 +15,7 @@ public class GamePlayer {
     public GamePlayer(Player player) {
         this.player = player;
         numOfMoves = 0;
-        maxDepth = 100;
+        // maxDepth = 100;
     }
 
     /**
@@ -33,23 +33,22 @@ public class GamePlayer {
     private BoardCell getCellForNextMove() {
         // TODO: Please implement it.
         numOfMoves++;
-        maxDepth=100;
-        int rows = 10;
-        /*if(numOfMoves == 1){
-            rows = 5;
-        }
+        maxDepth = 1000;
+
+
+
         if (0 < numOfMoves && numOfMoves < 25)
-            maxDepth = 5;
+            maxDepth = 3;
         if (25 <= numOfMoves && numOfMoves < 34)
-            maxDepth = 6;
+            maxDepth = 4;
         if (34 <= numOfMoves && numOfMoves < 38)
-            maxDepth = 7;
+            maxDepth = 5;
         if (38 <= numOfMoves && numOfMoves < 40)
-            maxDepth = 9;
+            maxDepth = 6;
         if (40 <= numOfMoves && numOfMoves < 42)
-            maxDepth = 10;
+            maxDepth = 7;
         if (42 <= numOfMoves && numOfMoves < 44)
-            maxDepth = 11;*/
+            maxDepth = 8;
 
         int bestVal = -10000;
         BoardCell bestCell = new BoardCell(-1, -1, player);
@@ -57,11 +56,10 @@ public class GamePlayer {
         Player[][] b = board.getBoard();
 
 
-
         // Traverse all cells, evaluate minimax function for
         // all empty cells. And return the cell with optimal
         // value.
-        for (int i = 0; i < rows; i++) {
+        for (int i = 0; i < 10; i++) {
             for (int j = 0; j < 10; j++) {
                 // Check if cell is empty
                 if (b[i][j] == null) {
@@ -71,7 +69,7 @@ public class GamePlayer {
 
                     // compute evaluation function for this
                     // move.
-                    int moveVal = minimax(board, 0, true, -1000000, 1000000);
+                    int moveVal = minimax(board, 0, false, Integer.MIN_VALUE, Integer.MAX_VALUE);
 
                     // Undo the move
                     board.remove(i, j);
@@ -91,7 +89,11 @@ public class GamePlayer {
     }
 
     private int minimax(Board b, int depth, boolean isMax, int alpha, int beta) {
-        int score = b.evaluate(player);
+
+        int score = 0;
+
+        if (b.getNumFilledCells() > 5)
+            score = b.evaluate(player);
 
 
         // If Maximizer has won the game return his
@@ -109,6 +111,7 @@ public class GamePlayer {
         if (b.isFull())
             return 0;
 
+        //maximum depth has been reached
         if (depth == this.maxDepth) {
             if (isMax)
                 return b.scoreGameState(player);
@@ -119,7 +122,7 @@ public class GamePlayer {
 
         // If this maximizer's move
         if (isMax) {
-            int best = -1000;
+            int best = Integer.MIN_VALUE;
 
             // Traverse all cells
             for (int i = 0; i < 10; i++) {
@@ -138,9 +141,12 @@ public class GamePlayer {
                         // Undo the move
                         b.remove(i, j);
 
+                        if (best >= beta)
+                            return best;
+
                         alpha = Math.max(alpha, best);
-                        if (beta <= alpha)
-                           return best;//?
+                        /*if (beta <= alpha)
+                            return alpha;//?*/
                     }
                 }
             }
@@ -149,7 +155,7 @@ public class GamePlayer {
 
         // If this minimizer's move
         else {
-            int best = 1000;
+            int best = Integer.MAX_VALUE;
 
             // Traverse all cells
             for (int i = 0; i < 10; i++) {
@@ -170,9 +176,12 @@ public class GamePlayer {
                         // Undo the move
                         b.remove(i, j);
 
+                        if (best <= alpha)
+                            return best;
+
                         beta = Math.min(beta, best);
-                        if (beta <= alpha)
-                            return best;//?
+                        /*if (beta <= alpha)
+                            return beta;//?*/
                     }
                 }
             }
