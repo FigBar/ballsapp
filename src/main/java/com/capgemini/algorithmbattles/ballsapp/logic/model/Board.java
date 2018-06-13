@@ -521,7 +521,7 @@ public class Board {
     }
 
     private static boolean isStraightFour(Player[] sequence, Player player) {
-       // return ThreatUtils.matchPattern(sequence, player, true) != -1;
+        //return ThreatUtils.matchPattern3(sequence, player, true) != -1;
         Player[] straightFour = new Player[]{null, player, player, player, player, null};
         // if (DEBUG) System.out.println("IsStraightFour? " + in.replaceAll(" ", "-"));
         //boolean isFour = true;
@@ -533,6 +533,7 @@ public class Board {
     }
 
     public BoardCell concat(Player player, boolean block) {
+        BoardCell best = null;
         // Checking for Rows for X or O victory.
         for (int row = 0; row < 10; row++) {
             int i = 0;
@@ -573,6 +574,17 @@ public class Board {
                     return new BoardCell(row, i + where, null);
                 i++;
             }
+            i = 0;
+            while (i < 5) {
+                Player[] sequence = new Player[6];
+                for (int j = i; j < i + 6; j++)
+                    sequence[j - i] = board[row][j];
+                int where = ThreatUtils.matchPattern2(sequence, player, block);
+                if (where != -1)
+                    best = new BoardCell(row, i + where, null);
+                i++;
+            }
+
         }
 
 
@@ -613,6 +625,16 @@ public class Board {
                 if (where != -1) {
                     return new BoardCell(i + where, col, null);
                 }
+                i++;
+            }
+            i = 0;
+            while (i < 5) {
+                Player[] sequence = new Player[6];
+                for (int j = i; j < i + 6; j++)
+                    sequence[j - i] = board[j][col];
+                int where = ThreatUtils.matchPattern2(sequence, player, block);
+                if (where != -1)
+                    best = new BoardCell(i + where, col, null);
                 i++;
             }
         }
@@ -656,13 +678,22 @@ public class Board {
                 if (where != -1) {
                     return new BoardCell(row + where, col + where, null);
                 }
+                if (row < 5 && col < 5) {
+                    Player[] sequence2 = new Player[6];
+                    for (int j = 0; j < 6; j++)
+                        sequence2[j] = board[row + j][col + j];
+                    where = patterns.matchPattern2(sequence2, player, block);
+                    if (where != -1) {
+                        return new BoardCell(row + where, col + where, null);
+                    }
+                }
 
             }
 
         }
         // Checking for diagonals going from top right corner to bottom left corner.
         for (int row = 0; row < 6; row++) {
-            for (int col = 9; col >= 5; col--) {
+            for (int col = 9; col >= 4; col--) {
                 /*if (board[row][col] == board[row + 1][col - 1] && board[row + 1][col - 1] == board[row + 2][col - 2] && board[row][col] != null) {
                     if (board[row][col].equals(player)) {
                         if (row > 0) {
@@ -697,10 +728,19 @@ public class Board {
                 if (where != -1) {
                     return new BoardCell(row + where, col - where, null);
                 }
+                if (row < 5 && col > 4) {
+                    Player[] sequence2 = new Player[6];
+                    for (int j = 0; j < 6; j++)
+                        sequence2[j] = board[row + j][col - j];
+                    where = patterns.matchPattern2(sequence2, player, block);
+                    if (where != -1) {
+                        return new BoardCell(row + where, col + where, null);
+                    }
+                }
             }
         }
 
-        return null;
+        return best;
     }
 
 

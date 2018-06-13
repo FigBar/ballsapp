@@ -126,7 +126,7 @@ public class GamePlayer {
             if (isMax)
                 return b.getGameState(player);
             else
-                return -b.getGameState(player.getOther());
+                return b.getGameState(player.getOther());
         }
 
 

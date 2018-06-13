@@ -8,8 +8,10 @@ import java.util.List;
 
 public class ThreatUtils {
 
-    public static List<Player[]> REFUTATIONS;
+    public static List<Player[]> REFUTATIONS1;
+    public static List<Player[]> REFUTATIONS2;
     public static List<Player[]> THREES;
+    public static List<Player[]> THREES2;
     public static List<Player[]> FIRSTFOURS;
     public static List<Player[]> FIRSTFOURS2;
     public static List<Player[]> SECONDFOURS;
@@ -19,16 +21,29 @@ public class ThreatUtils {
 
     public ThreatUtils() {
         this.THREES = new ArrayList<>();
+        this.THREES2 = new ArrayList<>();
         this.FIRSTFOURS = new ArrayList<>();
         this.SECONDFOURS = new ArrayList<>();
-        this.REFUTATIONS = new ArrayList<>();
         this.FIRSTFOURS2 = new ArrayList<>();
         this.SECONDFOURS2 = new ArrayList<>();
 
-        /*THREES.add(new Player[] {null, FIRST, FIRST, FIRST, null, null});
-        THREES.add(new Player[] {null, null, FIRST, FIRST, FIRST, null});
+        this.REFUTATIONS1 = new ArrayList<>();
+        this.REFUTATIONS2 = new ArrayList<>();
+
+
+        THREES.add(new Player[] {FIRST, null, FIRST, FIRST, null, null});
+        THREES.add(new Player[] {FIRST, FIRST, null, FIRST,null, null});
         THREES.add(new Player[] {null, FIRST, null, FIRST, FIRST, null});
-        THREES.add(new Player[] {null, FIRST, FIRST, null, FIRST, null});*/
+        THREES.add(new Player[] {null, FIRST, FIRST, null, FIRST, null});
+        THREES.add(new Player[] {null, null, FIRST, FIRST, null, FIRST});
+        THREES.add(new Player[] {null, null, FIRST, null, FIRST, FIRST});
+
+        THREES2.add(new Player[] {SECOND, null, SECOND, SECOND, null, null});
+        THREES2.add(new Player[] {SECOND, SECOND, null, SECOND,null, null});
+        THREES2.add(new Player[] {null, SECOND, null, SECOND, SECOND, null});
+        THREES2.add(new Player[] {null, SECOND, SECOND, null, SECOND, null});
+        THREES2.add(new Player[] {null, null, SECOND, SECOND, null, SECOND});
+        THREES2.add(new Player[] {null, null, SECOND, null, SECOND, SECOND});
 
         //FOURS.add(new Player[] {null, FIRST, FIRST, FIRST, FIRST, null});
         FIRSTFOURS.add(new Player[]{FIRST, FIRST, FIRST, null, FIRST});
@@ -37,6 +52,8 @@ public class ThreatUtils {
 
         FIRSTFOURS.add(new Player[]{FIRST, FIRST, FIRST, FIRST, null});
         FIRSTFOURS.add(new Player[]{null, FIRST, FIRST, FIRST, FIRST});
+
+        FIRSTFOURS.add(new Player[]{FIRST, null, FIRST, FIRST, null});
 
         FIRSTFOURS2.addAll(FIRSTFOURS);
 
@@ -60,14 +77,31 @@ public class ThreatUtils {
 
         //FOURS.add(new Player[] {null, FIRST, FIRST, FIRST, FIRST, null});
 
-        /*REFUTATIONS.add(new ThreatPattern(new Player[] {FIRST, FIRST, FIRST, null, null}, new
-                int[] {3, 4}));
-        REFUTATIONS.add(new ThreatPattern(new Player[] {FIRST, FIRST, null, null, FIRST}, new
-                int[] {2, 3} ));
-        REFUTATIONS.add(new ThreatPattern(new Player[] {FIRST, null, null, FIRST, FIRST}, new
-                int[] {1, 2} ));
-        REFUTATIONS.add(new ThreatPattern(new Player[] {null, null, FIRST, FIRST, FIRST}, new
-                int[] {0, 1} ));*/
+      /*  REFUTATIONS1.add(new Player[] {FIRST, FIRST, FIRST, FIRST, null, null});
+        REFUTATIONS1.add(new Player[] {FIRST, FIRST, FIRST, null, FIRST, null});
+        REFUTATIONS1.add(new Player[] {FIRST, FIRST, null, FIRST, FIRST, null});
+        REFUTATIONS1.add(new Player[] {FIRST, null, FIRST, FIRST, FIRST, null});
+        REFUTATIONS1.add(new Player[] {null, FIRST, FIRST, FIRST, FIRST, null});
+        REFUTATIONS1.add(new Player[] {null, null, FIRST, FIRST, FIRST, FIRST});
+
+        REFUTATIONS1.add(new Player[] {FIRST, null, FIRST, FIRST, FIRST, SECOND});
+        REFUTATIONS1.add(new Player[] {FIRST, FIRST, null, FIRST, FIRST, SECOND});
+        REFUTATIONS1.add(new Player[] {FIRST, FIRST, FIRST, FIRST, null, SECOND});
+        REFUTATIONS1.add(new Player[] {SECOND, FIRST, FIRST, FIRST, FIRST, null});
+        REFUTATIONS1.add(new Player[] {SECOND, FIRST, FIRST, null, FIRST, FIRST});
+        REFUTATIONS1.add(new Player[] {SECOND, null, FIRST, FIRST, FIRST, FIRST});
+        REFUTATIONS1.add(new Player[] {SECOND, FIRST, null, FIRST, FIRST, FIRST});
+        REFUTATIONS1.add(new Player[] {SECOND, FIRST, FIRST, FIRST, null, FIRST});
+
+
+        REFUTATIONS2.add(new Player[] {SECOND, SECOND, SECOND, SECOND, null, null});
+        REFUTATIONS2.add(new Player[] {SECOND, SECOND, null, SECOND, SECOND, null});
+        REFUTATIONS2.add(new Player[] {null, SECOND, SECOND, SECOND, SECOND, null});
+        REFUTATIONS2.add(new Player[] {SECOND, null, SECOND, SECOND, SECOND, null});
+        REFUTATIONS2.add(new Player[] {SECOND, SECOND, SECOND, SECOND, null, FIRST});
+        REFUTATIONS2.add(new Player[] {SECOND, SECOND, null, SECOND, SECOND, FIRST});
+        REFUTATIONS2.add(new Player[] {FIRST, SECOND, SECOND, SECOND, SECOND, null});
+        REFUTATIONS2.add(new Player[] {SECOND, null, SECOND, SECOND, SECOND, FIRST});*/
     }
 
     /* *//**
@@ -207,6 +241,47 @@ public class ThreatUtils {
 
             return -1;
         }
+    }
+
+    public static int matchPattern2(Player[] pattern, Player player, boolean block) {
+        int sum = 0;
+        if (block) {
+            if (player == FIRST) {
+                for (Player[] a : THREES) {
+                    if (sum == 6) break;
+                    sum = 0;
+                    for (int i = 0; i < a.length; i++) {
+                        if (a[i] == pattern[i]) sum++;
+                        if (sum>=6) break;
+                    }
+                }
+                if (sum == 6) {
+                    for (int i = 0; i < 4; i++)
+                        if (pattern[i] == FIRST && pattern[i+1] == null && pattern[i+2] == FIRST)
+                            return i+1;
+                }
+            }
+
+            if (player == SECOND) {
+                for (Player[] a : THREES2) {
+                    if (sum == 6) break;
+                    sum = 0;
+                    for (int i = 0; i < a.length; i++) {
+                        if (a[i] == pattern[i]) sum++;
+                        if (sum>=6) break;
+                    }
+                }
+                if (sum == 6) {
+                    for (int i = 0; i < 6; i++) {
+                        if (pattern[i] == SECOND && pattern[i+1] == null && pattern[i+2] == SECOND)
+                            return i+1;
+                    }
+                }
+            }
+
+            return -1;
+        }
+        return -1;
     }
 
 }
