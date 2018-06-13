@@ -12,9 +12,11 @@ public class GamePlayer {
     int numOfMoves;
     int maxDepth;
 
+
     public GamePlayer(Player player) {
         this.player = player;
         numOfMoves = 0;
+        board.setPlayer(player);
         // maxDepth = 100;
     }
 

@@ -2,6 +2,8 @@ package com.capgemini.algorithmbattles.ballsapp.logic.model;
 
 import com.capgemini.algorithmbattles.ballsapp.logic.BoardDrawer;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import java.util.Stack;
 
@@ -9,8 +11,8 @@ public class Board {
     private int numFilledCells = 0;
     private static final int SIZE = 10;
     private Player[][] board = new Player[SIZE][SIZE];
-    private Stack<Move> moves;
-    private int currentIndex = 1;
+    private Stack<BoardCell> moves;
+    private Player currentPlayer;
 
     public static final double FIVE_IN_A_ROW = Double.POSITIVE_INFINITY - 1;
     public static final double STRAIGHT_FOUR_POINTS = 1000;
@@ -23,6 +25,9 @@ public class Board {
         return numFilledCells;
     }
 
+    public void setPlayer(Player player) {
+        currentPlayer = player;
+    }
     public void placeMove(BoardCell move) {
         board[move.getX()][move.getY()] = move.getPlayer();
         numFilledCells++;
@@ -33,6 +38,14 @@ public class Board {
             board[x][y] = null;
             numFilledCells--;
         }
+    }
+
+    public List<BoardCell> getMoves() {
+        return new ArrayList(moves);
+    }
+
+    public BoardCell getLastMove() {
+        return !moves.isEmpty() ? moves.peek() : null;
     }
 
     public Player getPlayerAt(int x, int y) {
@@ -54,6 +67,71 @@ public class Board {
         return board;
     }
 
+    private boolean isWinner(Player player) {
+        if(moves.size() < 5) return false;
+        BoardCell lastMove = getLastMove();
+        int row = lastMove.getX();
+        int col = lastMove.getY();
+        if(board[row][col] == player) {
+            // Diagonal from the bottom left to the top right
+            if(countConsecutiveStones(row, col, 1, -1) +
+                    countConsecutiveStones(row, col, -1, 1) == 4) {
+                return true;
+            }
+            // Diagonal from the top left to the bottom right
+            if(countConsecutiveStones(row, col, -1, -1) +
+                    countConsecutiveStones(row, col, 1, 1) == 4) {
+                return true;
+            }
+            // Horizontal
+            if(countConsecutiveStones(row, col, 0, 1) +
+                    countConsecutiveStones(row, col, 0, -1) == 4) {
+                return true;
+            }
+            // Vertical
+            if(countConsecutiveStones(row, col, 1, 0) +
+                    countConsecutiveStones(row, col, -1, 0) == 4) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    private boolean inBounds(int index) {
+        return index >= 0 && index < SIZE;
+    }
+
+    /**
+     * Iterates along the board from a start position and counts the
+     * consecutive stones belonging to a player. The row/column increment
+     * defines the direction of the iteration - e.g. +1, -1 would iterate
+     * diagonally down to the right. The start position must be occupied by
+     * the player in question.
+     * @param row Row start pos
+     * @param col Column start pos
+     * @param rowIncrement Row increment
+     * @param colIncrement Column increment
+     * @return The number of consecutive unbroken stones found
+     */
+    private int countConsecutiveStones(int row, int col, int rowIncrement,
+                                       int colIncrement) {
+        int count = 0;
+        Player player = board[row][col];
+        for(int i = 1; i <= 4; i++) {
+            if(inBounds(row + (rowIncrement*i)) && inBounds(col +
+                    (colIncrement*i))) {
+                if(board[row + (rowIncrement*i)][col + (colIncrement*i)] ==
+                        player) {
+                    count++;
+                } else {
+                    break;
+                }
+            }
+        }
+        return count;
+    }
+}
 
     public BoardCell attackMove(Player player) {
         // Checking for Rows for X or O victory.
