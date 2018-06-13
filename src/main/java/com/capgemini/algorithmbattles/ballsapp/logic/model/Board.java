@@ -1,6 +1,7 @@
 package com.capgemini.algorithmbattles.ballsapp.logic.model;
 
 import com.capgemini.algorithmbattles.ballsapp.logic.BoardDrawer;
+import com.capgemini.algorithmbattles.ballsapp.solution.ThreatUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,9 +11,9 @@ public class Board {
     private int numFilledCells = 0;
     private static final int SIZE = 10;
     private Player[][] board = new Player[SIZE][SIZE];
-    private Stack<BoardCell> moves;
-    private Player currentPlayer;
-    private Player startingPlayer;
+    // private Stack<BoardCell> moves;
+ /*   private Player currentPlayer;
+    private Player startingPlayer;*/
 
     public static final double FIVE_IN_A_ROW = Double.POSITIVE_INFINITY - 1;
     public static final double STRAIGHT_FOUR_POINTS = 1000;
@@ -21,35 +22,36 @@ public class Board {
     public static final double TWOS_POINTS = 5;
     public static final double ONES_POINTS = 1;
 
+    public ThreatUtils patterns = new ThreatUtils();
+
     public int getNumFilledCells() {
         return numFilledCells;
     }
 
-    public void setPlayer(Player player) {
+    /*public void setPlayer(Player player) {
         currentPlayer = player;
         startingPlayer = player;
-    }
+    }*/
+
     public void placeMove(BoardCell move) {
         board[move.getX()][move.getY()] = move.getPlayer();
         numFilledCells++;
-        currentPlayer = currentPlayer.getOther();
     }
 
     public void remove(int x, int y) {
         if (board[x][y] != null) {
             board[x][y] = null;
             numFilledCells--;
-            currentPlayer = currentPlayer.getOther();
         }
     }
 
-    public List<BoardCell> getMoves() {
+    /*public List<BoardCell> getMoves() {
         return new ArrayList(moves);
     }
 
     public BoardCell getLastMove() {
         return !moves.isEmpty() ? moves.peek() : null;
-    }
+    }*/
 
     public Player getPlayerAt(int x, int y) {
         return board[x][y];
@@ -68,78 +70,6 @@ public class Board {
 
     public Player[][] getBoard() {
         return board;
-    }
-
-    private boolean isWinner(Player player) {
-        if(moves.size() < 5) return false;
-        BoardCell lastMove = getLastMove();
-        int row = lastMove.getX();
-        int col = lastMove.getY();
-        if(board[row][col] == player) {
-            // Diagonal from the bottom left to the top right
-            if(countConsecutiveStones(row, col, 1, -1) +
-                    countConsecutiveStones(row, col, -1, 1) == 4) {
-                return true;
-            }
-            // Diagonal from the top left to the bottom right
-            if(countConsecutiveStones(row, col, -1, -1) +
-                    countConsecutiveStones(row, col, 1, 1) == 4) {
-                return true;
-            }
-            // Horizontal
-            if(countConsecutiveStones(row, col, 0, 1) +
-                    countConsecutiveStones(row, col, 0, -1) == 4) {
-                return true;
-            }
-            // Vertical
-            if(countConsecutiveStones(row, col, 1, 0) +
-                    countConsecutiveStones(row, col, -1, 0) == 4) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-
-    private boolean inBounds(int index) {
-        return index >= 0 && index < SIZE;
-    }
-
-    /**
-     * Iterates along the board from a start position and counts the
-     * consecutive stones belonging to a player. The row/column increment
-     * defines the direction of the iteration - e.g. +1, -1 would iterate
-     * diagonally down to the right. The start position must be occupied by
-     * the player in question.
-     * @param row Row start pos
-     * @param col Column start pos
-     * @param rowIncrement Row increment
-     * @param colIncrement Column increment
-     * @return The number of consecutive unbroken stones found
-     */
-    private int countConsecutiveStones(int row, int col, int rowIncrement,
-                                       int colIncrement) {
-        int count = 0;
-        Player player = board[row][col];
-        for(int i = 1; i <= 4; i++) {
-            if(inBounds(row + (rowIncrement*i)) && inBounds(col +
-                    (colIncrement*i))) {
-                if(board[row + (rowIncrement*i)][col + (colIncrement*i)] ==
-                        player) {
-                    count++;
-                } else {
-                    break;
-                }
-            }
-        }
-        return count;
-    }
-
-    protected int terminal() {
-        if(isWinner(startingPlayer)) return 1;
-        if(isWinner(startingPlayer.getOther())) return 2;
-        if(moves.size() == SIZE * SIZE) return 3;
-        return 0;
     }
 
     public double evaluate(Player player) {
@@ -164,9 +94,6 @@ public class Board {
                 i++;
             }
         }
-
-
-        i = 0;
 
 
         // Checking for Columns for X or O victory.
@@ -594,14 +521,186 @@ public class Board {
     }
 
     private static boolean isStraightFour(Player[] sequence, Player player) {
+       // return ThreatUtils.matchPattern(sequence, player, true) != -1;
         Player[] straightFour = new Player[]{null, player, player, player, player, null};
         // if (DEBUG) System.out.println("IsStraightFour? " + in.replaceAll(" ", "-"));
         //boolean isFour = true;
-        for (int i = 0; i < 6; i++){
+        for (int i = 0; i < 6; i++) {
             if (sequence[i] != straightFour[i])
                 return false;
         }
         return true;//sequence.equals(straightFour);
+    }
+
+    public BoardCell concat(Player player, boolean block) {
+        // Checking for Rows for X or O victory.
+        for (int row = 0; row < 10; row++) {
+            int i = 0;
+            //start Martin i Bartek
+            /*if (block) {
+                while (i <= 7) {
+                    if (board[row][i] == board[row][i + 1] && board[row][i + 1] == board[row][i + 2] && board[row][i] != null) {
+                        if (board[row][i].equals(player)) {
+                            if (i > 0) {
+                                if (i < 7) {
+                                    if (board[row][i - 1] == null)
+                                        return new BoardCell(row, i - 1, null);
+                                    if (board[row][i + 3] == null) {
+                                        return new BoardCell(row, i + 3, null);
+                                    }
+                                } else {
+                                    if (board[row][i - 1] == null)
+                                        return new BoardCell(row, i - 1, null);
+                                }
+                            } else {
+                                if (board[row][i + 3] == null) {
+                                    return new BoardCell(row, i + 3, null);
+                                }
+                            }
+                        }
+                    }
+                    i++;
+                }
+            }*/
+            //end Martin i Bartek
+            i = 0;
+            while (i < 6) {
+                Player[] sequence = new Player[5];
+                for (int j = i; j < i + 5; j++)
+                    sequence[j - i] = board[row][j];
+                int where = ThreatUtils.matchPattern(sequence, player, block);
+                if (where != -1)
+                    return new BoardCell(row, i + where, null);
+                i++;
+            }
+        }
+
+
+        // Checking for Columns for X or O victory.
+        for (int col = 0; col < 10; col++) {
+            int i = 0;
+            //start Martin i Bartek
+            /*while (i <= 7) {
+                if (board[i][col] == board[i + 1][col] && board[i + 1][col] == board[i + 2][col] && board[i][col] != null) {
+                    if (board[i][col].equals(player)) {
+                        if (i > 0) {
+                            if (i < 7) {
+                                if (board[i - 1][col] == null)
+                                    return new BoardCell(i - 1, col, null);
+                                if (board[i + 3][col] == null) {
+                                    return new BoardCell(i + 3, col, null);
+                                }
+                            } else {
+                                if (board[i - 1][col] == null)
+                                    return new BoardCell(i - 1, col, null);
+                            }
+                        } else {
+                            if (board[i + 3][col] == null) {
+                                return new BoardCell(i + 3, col, null);
+                            }
+                        }
+                    }
+                }
+                i++;
+            }*/
+            //end Martin i Bartek
+            i = 0;
+            while (i < 6) {
+                Player[] sequence = new Player[5];
+                for (int j = i; j < i + 5; j++)
+                    sequence[j - i] = board[j][col];
+                int where = patterns.matchPattern(sequence, player, block);
+                if (where != -1) {
+                    return new BoardCell(i + where, col, null);
+                }
+                i++;
+            }
+        }
+        // Checking for diagonals going from top left corner to bottom right corner.
+        for (int row = 0; row < 6; row++) {
+            for (int col = 0; col < 6; col++) {
+                /*if (board[row][col] == board[row + 1][col + 1] && board[row + 1][col + 1] == board[row + 2][col + 2] && board[row][col] != null) {
+                    if (board[row][col].equals(player)) {
+                        if (row > 0) {
+                            if (row < 7) {
+                                if (col > 0) {
+                                    if (col < 7) {
+                                        if (board[row - 1][col - 1] == null)
+                                            return new BoardCell(row - 1, col - 1, null);
+
+                                        if (board[row + 3][col + 3] == null)
+                                            return new BoardCell(row + 3, col + 3, null);
+                                    } else {
+                                        if (board[row - 1][col - 1] == null)
+                                            return new BoardCell(row - 1, col - 1, null);
+                                    }
+                                } else {
+                                    if (board[row + 3][col + 3] == null)
+                                        return new BoardCell(row + 3, col + 3, null);
+                                }
+                            } else {
+                                if (board[row - 1][col - 1] == null)
+                                    return new BoardCell(row - 1, col - 1, null);
+                            }
+                        } else {
+                            if (board[row + 3][col + 3] == null)
+                                return new BoardCell(row + 3, col + 3, null);
+                        }
+                    }
+                }*/
+                //end Martin i Bartek
+                Player[] sequence = new Player[5];
+                for (int j = 0; j < 5; j++)
+                    sequence[j] = board[row + j][col + j];
+                int where = patterns.matchPattern(sequence, player, block);
+                if (where != -1) {
+                    return new BoardCell(row + where, col + where, null);
+                }
+
+            }
+
+        }
+        // Checking for diagonals going from top right corner to bottom left corner.
+        for (int row = 0; row < 6; row++) {
+            for (int col = 9; col >= 5; col--) {
+                /*if (board[row][col] == board[row + 1][col - 1] && board[row + 1][col - 1] == board[row + 2][col - 2] && board[row][col] != null) {
+                    if (board[row][col].equals(player)) {
+                        if (row > 0) {
+                            if (row < 8) {
+                                if (col < 9) {
+                                    if (col > 2) {
+                                        if (board[row + 3][col - 3] == null)
+                                            return new BoardCell(row + 3, col - 3, null);
+                                    } else {
+                                        if (board[row - 1][col + 1] == null)
+                                            return new BoardCell(row - 1, col + 1, null);
+                                    }
+                                } else {
+                                    if (board[row + 3][col - 3] == null)
+                                        return new BoardCell(row + 3, col - 3, null);
+                                }
+                            } else {
+                                if (board[row - 1][col + 1] == null)
+                                    return new BoardCell(row - 1, col + 1, null);
+                            }
+                        } else {
+                            if (board[row + 3][col - 3] == null)
+                                return new BoardCell(row + 3, col - 3, null);
+                        }
+                    }
+                }*/
+                //end Martin i Bartek
+                Player[] sequence = new Player[5];
+                for (int j = 0; j < 5; j++)
+                    sequence[j] = board[row + j][col - j];
+                int where = patterns.matchPattern(sequence, player, block);
+                if (where != -1) {
+                    return new BoardCell(row + where, col - where, null);
+                }
+            }
+        }
+
+        return null;
     }
 
 

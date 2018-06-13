@@ -1,3 +1,4 @@
+/*
 package com.capgemini.algorithmbattles.ballsapp.solution;
 
 import com.capgemini.algorithmbattles.ballsapp.logic.model.Player;
@@ -6,7 +7,8 @@ public class ThreatPattern {
     private Player[][] pattern;
     private final int[] patternSquares;
 
-    /**
+    */
+/**
      * Create a new threat pattern.
      *
      * @param pattern        Pattern represented as a 1D array, where 0 is an
@@ -14,7 +16,8 @@ public class ThreatPattern {
      * @param patternSquares The offensive/defensive squares of the
      *                       threat, i.e. the indices of all 0's in the
      *                       pattern array
-     */
+     *//*
+
     public ThreatPattern(Player[] pattern, int[] patternSquares) {
         // Store the pattern from each players perspective in pattern[][]
         this.pattern = new Player[2][1];
@@ -23,31 +26,37 @@ public class ThreatPattern {
         this.patternSquares = patternSquares;
     }
 
-    /**
+    */
+/**
      * Get the pattern from the perspective of a player.
      *
      * @param playerIndex Player identifier
      * @return Pattern array
-     */
+     *//*
+
     public Player[] getPattern(int playerIndex) {
         return this.pattern[playerIndex - 1];
     }
 
-    /**
+    */
+/**
      * Return the offensive/defensive square indices in the pattern.
      *
      * @return int[] containing all the square indices
-     */
+     *//*
+
     public int[] getPatternSquares() {
         return this.patternSquares;
     }
 
-    /**
+    */
+/**
      * Convert an input pattern to player 2's perspective.
      *
      * @param pattern Input pattern array
      * @return Same array with every 1 turned into a 2
-     */
+     *//*
+
     private Player[] switchPattern(Player[] pattern) {
         Player[] patternSwitched = new Player[pattern.length];
         for (int i = 0; i < pattern.length; i++) {
@@ -58,3 +67,4 @@ public class ThreatPattern {
         return patternSwitched;
     }
 }
+*/

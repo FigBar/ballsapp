@@ -18,10 +18,8 @@ public enum Player {
     return this.equals(PLAYER_1) ? "player1" : "player2";
   }
 
-  public int getIndex(){
-    return this.equals(PLAYER_1) ? 1 : 2;
-  }
-
+  /*public int getIndex(){ return this.equals(PLAYER_1) ? 1 : 2; }
+*/
   public static Player mapToPlayer(String player) {
     return "player1".equals(player) ? PLAYER_1 : PLAYER_2;
   }

@@ -30,10 +30,10 @@ public class BoardCell {
     this.y = y;
   }
 
-  @Override
+  /*@Override
   public int hashCode() {
     return Objects.hash(this.x, this.y);
-  }
+  }*/
 
   public Player getPlayer() {
     return player;

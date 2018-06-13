@@ -5,11 +5,6 @@ import com.capgemini.algorithmbattles.ballsapp.logic.model.Board;
 import com.capgemini.algorithmbattles.ballsapp.logic.model.BoardCell;
 import com.capgemini.algorithmbattles.ballsapp.logic.model.Player;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-
 public class GamePlayer {
 
     private Player player;
@@ -17,137 +12,11 @@ public class GamePlayer {
     int numOfMoves;
     int maxDepth;
 
-    private final ThreatUtils reducer;
-    private final Evaluator evaluator;
-    private final Cache<Long, MoveEntry> moveTable;
-
-    private int totalNodeCount;
-    private int nonLeafCount;
-    private int branchesExploredSum;
-
-    private State state;
-
-    private class MoveEntry {
-        BoardCell move;
-        int depth;
-
-        public MoveEntry(BoardCell move, int depth) {
-            this.move = move;
-            this.depth = depth;
-        }
-    }
-
-    private class ScoredMove implements Comparable<ScoredMove> {
-        public BoardCell move;
-        public int score;
-        public ScoredMove(BoardCell move, int score) {
-            this.move = move;
-            this.score = score;
-        }
-
-        @Override
-        public int compareTo(ScoredMove move) {
-            return move.score - this.score;
-        }
-    }
-
-
     public GamePlayer(Player player) {
         this.player = player;
         numOfMoves = 0;
-        board.setPlayer(player);
-        this.reducer = new ThreatUtils();
-        this.evaluator = Evaluator.getInstance();
-        this.moveTable = new Cache<>(1000000);
+        // maxDepth = 100;
     }
-
-    /**
-     * Generate a list of sorted and pruned moves for this state. Moves are
-     * pruned when they are too far away from existing stones, and also when
-     * threats are found which require an immediate response.
-     * @param state State to get moves for
-     * @return A list of moves, sorted and pruned
-     */
-    private List<BoardCell> getSortedMoves(State state) {
-        // Board is empty, return a move in the middle of the board
-        if(state.getMoves() == 0) {
-            List<BoardCell> moves = new ArrayList<>();
-            moves.add(new BoardCell(state.board.length / 2, state.board.length / 2, Player.PLAYER_1));
-            return moves;
-        }
-
-        int playerIndex = state.currentIndex;
-        int opponentIndex = state.currentIndex == 2 ? 1 : 2;
-
-        HashSet<BoardCell> fours = new HashSet<>();
-        HashSet<BoardCell> refutations = new HashSet<>();
-
-        HashSet<BoardCell> opponentFours = new HashSet<>();
-        HashSet<BoardCell> opponentThrees = new HashSet<>();
-
-        // Check for threats first and respond to them if they exist
-        for(int i = 0; i < state.board.length; i++) {
-            for(int j = 0; j < state.board.length; j++) {
-                if(state.board[i][j].index == opponentIndex) {
-                    opponentFours.addAll(reducer.getFours(state,
-                            state.board[i][j], opponentIndex));
-                    opponentThrees.addAll(reducer.getThrees(state,
-                            state.board[i][j], opponentIndex));
-                }
-                else if(state.board[i][j].index == playerIndex) {
-                    fours.addAll(reducer.getFours(state, state.board[i][j],
-                            playerIndex));
-                    refutations.addAll(reducer.getRefutations(state, state
-                            .board[i][j], playerIndex));
-                }
-            }
-        }
-
-        // We have a four on the board, play it
-        if(!fours.isEmpty()) {
-            return new ArrayList<>(fours);
-        }
-        // Opponent has a four, defend against it
-        if(!opponentFours.isEmpty()) {
-            return new ArrayList<>(opponentFours);
-        }
-        // Opponent has a three, defend against it and add refutation moves
-        if(!opponentThrees.isEmpty()) {
-            opponentThrees.addAll(refutations);
-            return new ArrayList<>(opponentThrees);
-        }
-
-        List<ScoredMove> scoredMoves = new ArrayList<>();
-
-        MoveEntry entry = moveTable.get(state.getZobristHash());
-        // Grab closest moves
-        List<BoardCell> moves = new ArrayList<>();
-        for(int i = 0; i < state.board.length; i++) {
-            for(int j = 0; j < state.board.length; j++) {
-                // Ignore hash move
-                if(entry != null &&
-                        (i == entry.move.getX() && j == entry.move.getY())) {
-                    continue;
-                }
-                if(state.board[i][j].index == 0) {
-                    if(state.hasAdjacent(i, j, 2)) {
-                        int score = evaluator.evaluateField(state, i, j,
-                                state.currentIndex);
-                        scoredMoves.add(new ScoredMove(new BoardCell(i, j, Player.PLAYER_1), score));
-                    }
-                }
-            }
-        }
-
-        // Sort based on move score
-        Collections.sort(scoredMoves);
-        for(ScoredMove move : scoredMoves) {
-            moves.add(move.move);
-        }
-        return moves;
-    }
-
-    
 
     /**
      * The application should calculate the next move after this method call.
@@ -167,9 +36,9 @@ public class GamePlayer {
         maxDepth = 1000;
 
 
-        if (0 < numOfMoves && numOfMoves < 25)
-            maxDepth = 1;
-        if (25 <= numOfMoves && numOfMoves < 34)
+        if (0 < numOfMoves && numOfMoves < 29)
+            maxDepth = 3;
+        if (29 <= numOfMoves && numOfMoves < 34)
             maxDepth = 4;
         if (34 <= numOfMoves && numOfMoves < 38)
             maxDepth = 5;
@@ -180,14 +49,20 @@ public class GamePlayer {
         if (42 <= numOfMoves && numOfMoves < 44)
             maxDepth = 8;
 
-        double bestVal = Double.MIN_VALUE;
+        double bestVal = Double.NEGATIVE_INFINITY;
         BoardCell bestCell = new BoardCell(-1, -1, player);
 
         Player[][] b = board.getBoard();
 
-        /*BoardCell blockade = board.evaluate2(player.getOther());
-        if (blockade!= null)
-            return blockade;*/
+        BoardCell killer = board.concat(player, false);
+        if(killer!= null){
+            return killer;
+        }
+
+        BoardCell blockade = board.concat(player.getOther(), true);
+        if (blockade!= null) {
+            return blockade;
+        }
 
 
         // Traverse all cells, evaluate minimax function for
@@ -224,11 +99,11 @@ public class GamePlayer {
 
     private double minimax(Board b, int depth, boolean isMax, double alpha, double beta) {
 
-        double score = 0;
+        /*double score = 0;
 
-        //if (b.getNumFilledCells() > 5)
-            score = b.evaluate(player);
-            //double score2 = -b.scoreGameState(player.getOther());
+        if (b.getNumFilledCells() > 5)*/
+        double score = b.evaluate(player);
+        //double score2 = -b.scoreGameState(player.getOther());
 
 
         // If Maximizer has won the game return his
