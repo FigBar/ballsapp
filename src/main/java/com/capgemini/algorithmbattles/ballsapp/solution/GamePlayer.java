@@ -36,9 +36,8 @@ public class GamePlayer {
         maxDepth = 1000;
 
 
-
         if (0 < numOfMoves && numOfMoves < 25)
-            maxDepth = 3;
+            maxDepth = 1;
         if (25 <= numOfMoves && numOfMoves < 34)
             maxDepth = 4;
         if (34 <= numOfMoves && numOfMoves < 38)
@@ -50,10 +49,14 @@ public class GamePlayer {
         if (42 <= numOfMoves && numOfMoves < 44)
             maxDepth = 8;
 
-        int bestVal = -10000;
+        double bestVal = Double.MIN_VALUE;
         BoardCell bestCell = new BoardCell(-1, -1, player);
 
         Player[][] b = board.getBoard();
+
+        /*BoardCell blockade = board.evaluate2(player.getOther());
+        if (blockade!= null)
+            return blockade;*/
 
 
         // Traverse all cells, evaluate minimax function for
@@ -69,7 +72,7 @@ public class GamePlayer {
 
                     // compute evaluation function for this
                     // move.
-                    int moveVal = minimax(board, 0, false, Integer.MIN_VALUE, Integer.MAX_VALUE);
+                    double moveVal = minimax(board, 0, false, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
 
                     // Undo the move
                     board.remove(i, j);
@@ -88,22 +91,23 @@ public class GamePlayer {
         return bestCell;
     }
 
-    private int minimax(Board b, int depth, boolean isMax, int alpha, int beta) {
+    private double minimax(Board b, int depth, boolean isMax, double alpha, double beta) {
 
-        int score = 0;
+        double score = 0;
 
-        if (b.getNumFilledCells() > 5)
+        //if (b.getNumFilledCells() > 5)
             score = b.evaluate(player);
+            //double score2 = -b.scoreGameState(player.getOther());
 
 
         // If Maximizer has won the game return his
         // evaluated score
-        if (score == 1000)
+        if (score == Board.FIVE_IN_A_ROW)
             return score - depth;
 
         // If Minimizer has won the game return his/her
         // evaluated score
-        if (score == -1000)
+        if (score == -Board.FIVE_IN_A_ROW)
             return score + depth;
 
         // If there are no more moves and no winner then
@@ -114,15 +118,15 @@ public class GamePlayer {
         //maximum depth has been reached
         if (depth == this.maxDepth) {
             if (isMax)
-                return b.scoreGameState(player);
+                return b.getGameState(player);
             else
-                return -b.scoreGameState(player);
+                return -b.getGameState(player.getOther());
         }
 
 
         // If this maximizer's move
         if (isMax) {
-            int best = Integer.MIN_VALUE;
+            double best = Double.NEGATIVE_INFINITY;
 
             // Traverse all cells
             for (int i = 0; i < 10; i++) {
@@ -155,7 +159,7 @@ public class GamePlayer {
 
         // If this minimizer's move
         else {
-            int best = Integer.MAX_VALUE;
+            double best = Double.POSITIVE_INFINITY;
 
             // Traverse all cells
             for (int i = 0; i < 10; i++) {

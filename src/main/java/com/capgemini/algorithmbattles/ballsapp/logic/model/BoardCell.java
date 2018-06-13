@@ -1,5 +1,7 @@
 package com.capgemini.algorithmbattles.ballsapp.logic.model;
 
+import java.util.Objects;
+
 public class BoardCell {
 
   private int x;
@@ -26,6 +28,11 @@ public class BoardCell {
 
   public void setY(int y) {
     this.y = y;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(this.x, this.y);
   }
 
   public Player getPlayer() {

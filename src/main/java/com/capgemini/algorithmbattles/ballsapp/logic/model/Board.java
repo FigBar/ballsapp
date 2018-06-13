@@ -3,20 +3,21 @@ package com.capgemini.algorithmbattles.ballsapp.logic.model;
 import com.capgemini.algorithmbattles.ballsapp.logic.BoardDrawer;
 
 import java.util.Random;
+import java.util.Stack;
 
 public class Board {
     private int numFilledCells = 0;
     private static final int SIZE = 10;
     private Player[][] board = new Player[SIZE][SIZE];
+    private Stack<Move> moves;
+    private int currentIndex = 1;
 
-    public static final double FIVE_IN_A_ROW = Double.POSITIVE_INFINITY;
+    public static final double FIVE_IN_A_ROW = Double.POSITIVE_INFINITY - 1;
     public static final double STRAIGHT_FOUR_POINTS = 1000;
     public static final double FOURS_POINTS = 500;
     public static final double THREES_POINTS = 100;
     public static final double TWOS_POINTS = 5;
     public static final double ONES_POINTS = 1;
-
-    private static boolean DEBUG = false;
 
     public int getNumFilledCells() {
         return numFilledCells;
@@ -523,8 +524,7 @@ public class Board {
 //        return sum;
     }
 
-    @SuppressWarnings("Duplicates")
-    public int evaluate(Player player) {
+    public double evaluate(Player player) {
         String which = player.toString();
 
         // Checking for Rows for X or O victory.
@@ -539,9 +539,9 @@ public class Board {
                         i++;
                         continue;
                     } else if (board[row][i].toString().equals(which))
-                        return +1000;
+                        return FIVE_IN_A_ROW;
                     else
-                        return -1000;
+                        return -FIVE_IN_A_ROW;
                 }
                 i++;
             }
@@ -562,9 +562,9 @@ public class Board {
                         i++;
                         continue;
                     } else if (board[i][col].toString().equals(which))
-                        return +1000;
+                        return FIVE_IN_A_ROW;
                     else
-                        return -1000;
+                        return -FIVE_IN_A_ROW;
                 }
                 i++;
             }
@@ -578,9 +578,9 @@ public class Board {
                         board[row + 3][col + 3] == board[row + 4][col + 4]) {
                     if (board[row][col] == null) {
                     } else if (board[row][col].toString().equals(which))
-                        return +1000;
+                        return FIVE_IN_A_ROW;
                     else
-                        return -1000;
+                        return -FIVE_IN_A_ROW;
                 }
             }
         }
@@ -592,9 +592,9 @@ public class Board {
 
                     if (board[row][col] == null) {
                     } else if (board[row][col].toString().equals(which))
-                        return +1000;
+                        return FIVE_IN_A_ROW;
                     else
-                        return -1000;
+                        return -FIVE_IN_A_ROW;
                 }
             }
         }
@@ -692,58 +692,35 @@ public class Board {
 
                         if (count < 3 || count == 5) {
                             evaluation += getPointsToAdd(count);
-                            if (DEBUG)
-                                System.out.println("[horiz]BOARD[" + row + "][" + col + "]: ADDED UTILITY VALUE OF: " + getPointsToAdd(count));
                         } else if (count == 3) {
                             if (encounteredEnemy == -1) {
                                 evaluation += THREES_POINTS;
-                                if (DEBUG)
-                                    System.out.println("[horiz(1)BOARD[" + row + "][" + col + "]: ADDED UTILITY VALUE OF: " + THREES_POINTS);
                             } else if (lastEnemyEncounteredCol > -1) {//we encountered an enemy before seeing our player
                                 if (col - 1 >= 0 && encounteredEnemy == col + 4) {//we have enough room to make a 4, check to the left one to see if we can make a 5 (-O-X-XXO--)
                                     if (board[row][col - 1] != enemy) {
                                         evaluation += THREES_POINTS;
-                                        if (DEBUG)
-                                            System.out.println("[horiz](2)BOARD[" + row + "][" + col + "]: ADDED UTILITY VALUE OF: " + THREES_POINTS);
                                     }
                                 } else if (col - 2 >= 0 && encounteredEnemy == col + 3) {//we are stuck on 3, check to the left 2 to see if we can make it a 5
                                     evaluation += THREES_POINTS;
-                                    if (DEBUG)
-                                        System.out.println("[horiz](3)BOARD[" + row + "][" + col + "]: ADDED UTILITY VALUE OF: " + THREES_POINTS);
                                 }
                             }
                         } else if (count == 4 && col - 1 < 0 && encounteredEnemy == -1) {//havent encountered an enemy before seeing our player
-                            if (DEBUG)
-                                System.out.println("[horiz](1)BOARD[" + row + "][" + col + "]: ADDED UTILITY VALUE OF: " + FOURS_POINTS);
                             evaluation += FOURS_POINTS;
                         } else if (encounteredEnemy > -1 && (col + 5 >= boardLength || col - 1 < 0)) {
                             //enemy is blocking us at the edge of the board (OXXXX)
-                            if (DEBUG) System.out.println("[horiz]BLOCKING ON EDGE!!!!!!");
                         } else { //check for the straight four
                             //String rowString = (board[row],col - 1, 6); //Create string representation to check for straight 4
-                            Player[] rowSequence = new Player[];
+                            Player[] rowSequence = new Player[6];
                             for (int i = -1; i < 5; i++) {
                                 rowSequence[i + 1] = board[row][col + i];
                             }
                             if (isStraightFour(rowSequence, player)) {//If it is a straight 4
-                                if (DEBUG)
-                                    System.out.println("[horiz](1)BOARD[" + row + "][" + col + "]: ADDED UTILITY VALUE OF: " + STRAIGHT_FOUR_POINTS);
                                 evaluation += STRAIGHT_FOUR_POINTS;
-                                //
-                                //
-                                //
-                                // mark
-                                //
-                                //
                             } else if (encounteredEnemy == -1) {//If it is possible to have a straight 4, and we have not encountered an enemy while searching
                                 evaluation += FOURS_POINTS;
-                                if (DEBUG)
-                                    System.out.println("[horiz](2)BOARD[" + row + "][" + col + "]: ADDED UTILITY VALUE OF: " + FOURS_POINTS);
                             } else { //If it is possible to have a straight 4, but we have encountered an enemy while searching, check if there is room on left
                                 if (board[row][col - 1] != enemy) {
                                     evaluation += FOURS_POINTS;
-                                    if (DEBUG)
-                                        System.out.println("[horiz](3)BOARD[" + row + "][" + col + "]: ADDED UTILITY VALUE OF: " + FOURS_POINTS);
                                 }
                             }
                         }
@@ -769,54 +746,35 @@ public class Board {
 
                         if (count < 3 || count == 5) {
                             evaluation += getPointsToAdd(count);
-                            if (DEBUG)
-                                System.out.println("[down]BOARD[" + row + "][" + col + "]: ADDED UTILITY VALUE OF: " + getPointsToAdd(count));
                         } else if (count == 3) {
                             if (encounteredEnemy == -1) {
                                 evaluation += THREES_POINTS;
-                                if (DEBUG)
-                                    System.out.println("[down](1)BOARD[" + row + "][" + col + "]: ADDED UTILITY VALUE OF: " + THREES_POINTS);
                             } else if (lastEnemyEncounteredRow > -1) {//we encountered an enemy before seeing our player
                                 if (row - 1 >= 0 && encounteredEnemy == row + 4) {//we have enough room to make a 4, check above to see if we can make a 5 (-O-X-XXO--)
                                     if (board[row - 1][col] != enemy) {
                                         evaluation += THREES_POINTS;
-                                        if (DEBUG)
-                                            System.out.println("[down](2)BOARD[" + row + "][" + col + "]: ADDED UTILITY VALUE OF: " + THREES_POINTS);
                                     }
                                 } else if (row - 2 >= 0 && encounteredEnemy == row + 3) {//we are stuck on 3, check to the left 2 to see if we can make it a 5
                                     evaluation += THREES_POINTS;
-                                    if (DEBUG)
-                                        System.out.println("[down](3)BOARD[" + row + "][" + col + "]: ADDED UTILITY VALUE OF: " + THREES_POINTS);
                                 }
                             }
                         } else if (count == 4 && row - 1 < 0 && encounteredEnemy == -1) {//havent encountered an enemy before seeing our player
-                            if (DEBUG)
-                                System.out.println("[down](0)BOARD[" + row + "][" + col + "]: ADDED UTILITY VALUE OF: " + FOURS_POINTS);
                             evaluation += FOURS_POINTS;
                         } else if (encounteredEnemy > -1 && (row + 5 >= boardLength || row - 1 < 0)) {
                             //enemy is blocking us at the edge of the board (OXXXX)
-                            if (DEBUG) System.out.println("[down]BLOCKING ON EDGE!!!!!!");
                         } else { //check for the straight four
-                            char[] newChars = new char[6];
-
+                            Player[] rowSequence = new Player[6];
                             for (int b = row - 1, i = 0; b < boardLength && b < row + 5; b++, i++) {
-                                newChars[i] = board[b][col];
+                                rowSequence[i] = board[b][col];
                             }
-                            String rowString = new String(newChars);
 
-                            if (isStraightFour(rowString, player)) {//If it is a straight 4
-                                if (DEBUG)
-                                    System.out.println("[down](1)BOARD[" + row + "][" + col + "]: ADDED UTILITY VALUE OF: " + STRAIGHT_FOUR_POINTS);
+                            if (isStraightFour(rowSequence, player)) {//If it is a straight 4
                                 evaluation += STRAIGHT_FOUR_POINTS;
                             } else if (encounteredEnemy == -1) {//If it is possible to have a straight 4, and we have not encountered an enemy while searching
                                 evaluation += FOURS_POINTS;
-                                if (DEBUG)
-                                    System.out.println("[down](2)BOARD[" + row + "][" + col + "]: ADDED UTILITY VALUE OF: " + FOURS_POINTS);
                             } else { //If it is possible to have a straight 4, but we have encountered an enemy while searching, check if there is room on left
                                 if (board[row - 1][col] != enemy) {
                                     evaluation += FOURS_POINTS;
-                                    if (DEBUG)
-                                        System.out.println("[down](3)BOARD[" + row + "][" + col + "]: ADDED UTILITY VALUE OF: " + FOURS_POINTS);
                                 }
                             }
                         }
@@ -845,54 +803,36 @@ public class Board {
 
                         if (count < 3 || count == 5) {
                             evaluation += getPointsToAdd(count);
-                            if (DEBUG)
-                                System.out.println("[up]BOARD[" + row + "][" + col + "]: ADDED UTILITY VALUE OF: " + getPointsToAdd(count));
                         } else if (count == 3) {
                             if (encounteredEnemy == -1) {
                                 evaluation += THREES_POINTS;
-                                if (DEBUG)
-                                    System.out.println("[up](1)BOARD[" + row + "][" + col + "]: ADDED UTILITY VALUE OF: " + THREES_POINTS);
                             } else if (lastEnemyEncounteredRow > -1) {//we encountered an enemy before seeing our player
                                 if (row + 1 < boardLength && encounteredEnemy == row - 4) {//we have enough room to make a 4, check upwards to see if we can make a 5 (-O-X-XXO--)
                                     if (board[row + 1][col] != enemy) {
                                         evaluation += THREES_POINTS;
-                                        if (DEBUG)
-                                            System.out.println("[up](2)BOARD[" + row + "][" + col + "]: ADDED UTILITY VALUE OF: " + THREES_POINTS);
                                     }
                                 } else if (row + 2 < boardLength && encounteredEnemy == row - 3) {//we are stuck on 3, check upwards 2 to see if we can make it a 5
                                     evaluation += THREES_POINTS;
-                                    if (DEBUG)
-                                        System.out.println("[up](3)BOARD[" + row + "][" + col + "]: ADDED UTILITY VALUE OF: " + THREES_POINTS);
                                 }
                             }
                         } else if (count == 4 && row + 1 >= boardLength && encounteredEnemy == -1) {//havent encountered an enemy before seeing our player
-                            if (DEBUG)
-                                System.out.println("[up](0)BOARD[" + row + "][" + col + "]: ADDED UTILITY VALUE OF: " + FOURS_POINTS);
                             evaluation += FOURS_POINTS;
                         } else if (encounteredEnemy > -1 && (row - 5 < 0 || row + 1 >= boardLength)) {
                             //enemy is blocking us at the edge of the board (OXXXX)
-                            if (DEBUG) System.out.println("[up]BLOCKING ON EDGE!!!!!!");
                         } else { //check for the straight four
-                            char[] newChars = new char[6];
+                            Player[] rowSequence = new Player[6];
 
                             for (int b = row + 1, i = 0; b >= 0 && b > row - 5; b--, i++) {
-                                newChars[i] = board[b][col];
+                                rowSequence[i] = board[b][col];
                             }
-                            String rowString = new String(newChars);
 
-                            if (isStraightFour(rowString, player)) {//If it is a straight 4
-                                if (DEBUG)
-                                    System.out.println("[up](1)BOARD[" + row + "][" + col + "]: ADDED UTILITY VALUE OF: " + STRAIGHT_FOUR_POINTS);
+                            if (isStraightFour(rowSequence, player)) {//If it is a straight 4
                                 evaluation += STRAIGHT_FOUR_POINTS;
                             } else if (encounteredEnemy == -1) {//If it is possible to have a straight 4, and we have not encountered an enemy while searching
                                 evaluation += FOURS_POINTS;
-                                if (DEBUG)
-                                    System.out.println("[up](2)BOARD[" + row + "][" + col + "]: ADDED UTILITY VALUE OF: " + FOURS_POINTS);
                             } else { //If it is possible to have a straight 4, but we have encountered an enemy while searching, check if there is room on left
                                 if (board[row + 1][col] != enemy) {
                                     evaluation += FOURS_POINTS;
-                                    if (DEBUG)
-                                        System.out.println("[up](3)BOARD[" + row + "][" + col + "]: ADDED UTILITY VALUE OF: " + FOURS_POINTS);
                                 }
                             }
                         }
@@ -922,55 +862,36 @@ public class Board {
 
                         if (count < 3 || count == 5) {
                             evaluation += getPointsToAdd(count);
-                            if (DEBUG)
-                                System.out.println("[BR-D]BOARD[" + row + "][" + col + "]: ADDED UTILITY VALUE OF: " + getPointsToAdd(count));
                         } else if (count == 3) {
                             if (encounteredEnemy == -1) {
                                 evaluation += THREES_POINTS;
-                                if (DEBUG)
-                                    System.out.println("[BR-D](1)BOARD[" + row + "][" + col + "]: ADDED UTILITY VALUE OF: " + THREES_POINTS);
                             } else if (lastEnemyEncounteredRow > -1) {//we encountered an enemy before seeing our player
                                 if ((row + 1 < boardLength && col - 1 >= 0) && (encounteredEnemy == row + 4 && encounteredEnemyY == col + 4)) {//we have enough room to make a 4, check upwards to see if we can make a 5 (-O-X-XXO--)
                                     if (board[row + 1][col - 1] != enemy) {
                                         evaluation += THREES_POINTS;
-                                        if (DEBUG)
-                                            System.out.println("[BR-D](2)BOARD[" + row + "][" + col + "]: ADDED UTILITY VALUE OF: " + THREES_POINTS);
                                     }
                                 } else if (row - 2 >= 0 && col - 2 >= 0 && (encounteredEnemy == row + 3 && encounteredEnemyY == col + 3)) {//we are stuck on 3, check upwards 2 to see if we can make it a 5
                                     evaluation += THREES_POINTS;
-                                    if (DEBUG)
-                                        System.out.println("[BR-D](3)BOARD[" + row + "][" + col + "]: ADDED UTILITY VALUE OF: " + THREES_POINTS);
                                 }
                             }
                         } else if (count == 4 && (col - 1 < 0 && row - 1 < 0) && encounteredEnemy == -1) {//havent encountered an enemy before seeing our player
-                            if (DEBUG)
-                                System.out.println("[BR-D](0)BOARD[" + row + "][" + col + "]: ADDED UTILITY VALUE OF: " + FOURS_POINTS);
                             evaluation += FOURS_POINTS;
                         } else if (encounteredEnemy > -1 && (row + 5 >= boardLength || row - 1 < 0) && (col + 5 >= boardLength || col - 1 < 0)) {
                             //enemy is blocking us at the edge of the board (OXXXX)
-                            if (DEBUG) System.out.println("[BR-D]BLOCKING ON EDGE!!!!!!");
                         } else { //check for the straight four
-                            char[] newChars = new char[6];
+                            Player[] rowSequence = new Player[6];
 
                             for (int b = row - 1, c = col - 1, i = 0; b < boardLength && b < row + 5 && b >= 0 && c >= 0; b++, c++, i++) {
-                                if (DEBUG) System.out.println(b + " " + c);
-                                newChars[i] = board[b][c];
+                                rowSequence[i] = board[b][c];
                             }
-                            String rowString = new String(newChars);
 
-                            if (isStraightFour(rowString, player)) {//If it is a straight 4
-                                if (DEBUG)
-                                    System.out.println("[BR-D](1)BOARD[" + row + "][" + col + "]: ADDED UTILITY VALUE OF: " + STRAIGHT_FOUR_POINTS);
+                            if (isStraightFour(rowSequence, player)) {//If it is a straight 4
                                 evaluation += STRAIGHT_FOUR_POINTS;
                             } else if (encounteredEnemy == -1) {//If it is possible to have a straight 4, and we have not encountered an enemy while searching
                                 evaluation += FOURS_POINTS;
-                                if (DEBUG)
-                                    System.out.println("[BR-D](2)BOARD[" + row + "][" + col + "]: ADDED UTILITY VALUE OF: " + FOURS_POINTS);
                             } else { //If it is possible to have a straight 4, but we have encountered an enemy while searching, check if there is room on left
                                 if (row - 1 >= 0 && col - 1 >= 0 && board[row - 1][col - 1] != enemy) {
                                     evaluation += FOURS_POINTS;
-                                    if (DEBUG)
-                                        System.out.println("[BR-D](3)BOARD[" + row + "][" + col + "]: ADDED UTILITY VALUE OF: " + FOURS_POINTS);
                                 }
                             }
                         }
@@ -1000,55 +921,37 @@ public class Board {
 
                         if (count < 3 || count == 5) {
                             evaluation += getPointsToAdd(count);
-                            if (DEBUG)
-                                System.out.println("[TR-D]BOARD[" + row + "][" + col + "]: ADDED UTILITY VALUE OF: " + getPointsToAdd(count));
                         } else if (count == 3) {
                             if (encounteredEnemy == -1) {
                                 evaluation += THREES_POINTS;
-                                if (DEBUG)
-                                    System.out.println("[TR-D](1)BOARD[" + row + "][" + col + "]: ADDED UTILITY VALUE OF: " + THREES_POINTS);
                             } else if (lastEnemyEncounteredRow > -1) {//we encountered an enemy before seeing our player
                                 if ((row - 1 >= 0 && col - 1 >= 0) && (encounteredEnemy == row - 4 && encounteredEnemyY == col + 4)) {//we have enough room to make a 4, check upwards to see if we can make a 5 (-O-X-XXO--)
                                     if (board[row - 1][col - 1] != enemy) {
                                         evaluation += THREES_POINTS;
-                                        if (DEBUG)
-                                            System.out.println("[TR-D](2)BOARD[" + row + "][" + col + "]: ADDED UTILITY VALUE OF: " + THREES_POINTS);
                                     }
                                 } else if (row + 2 < boardLength && col - 2 >= 0 && (encounteredEnemy == row - 3 && encounteredEnemyY == col + 3)) {//we are stuck on 3, check upwards 2 to see if we can make it a 5
                                     evaluation += THREES_POINTS;
-                                    if (DEBUG)
-                                        System.out.println("[TR-D](3)BOARD[" + row + "][" + col + "]: ADDED UTILITY VALUE OF: " + THREES_POINTS);
                                 }
                             }
                         } else if (count == 4 && (col - 1 < 0 && row + 1 >= boardLength) && encounteredEnemy == -1) {//havent encountered an enemy before seeing our player
-                            if (DEBUG)
-                                System.out.println("[TR-D](0)BOARD[" + row + "][" + col + "]: ADDED UTILITY VALUE OF: " + FOURS_POINTS);
                             evaluation += FOURS_POINTS;
                         } else if (encounteredEnemy > -1 && (row - 5 < 0 || row + 1 >= boardLength) && (col + 5 >= boardLength || col - 1 < 0)) {
                             //enemy is blocking us at the edge of the board (OXXXX)
-                            if (DEBUG) System.out.println("[TR-D]BLOCKING ON EDGE!!!!!!");
                         } else { //check for the straight four
-                            char[] newChars = new char[6];
+                            Player[] rowSequence = new Player[6];
 
                             for (int b = row + 1, c = col - 1, i = 0; b < boardLength && b > row - 5 && c >= 0; b--, c++, i++) {
-                                newChars[i] = board[b][c];
+                                rowSequence[i] = board[b][c];
                             }
-                            String rowString = new String(newChars);
 
-                            if (isStraightFour(rowString, player)) {//If it is a straight 4
-                                if (DEBUG)
-                                    System.out.println("[TR-D](1)BOARD[" + row + "][" + col + "]: ADDED UTILITY VALUE OF: " + STRAIGHT_FOUR_POINTS);
+                            if (isStraightFour(rowSequence, player)) {//If it is a straight 4
                                 evaluation += STRAIGHT_FOUR_POINTS;
                             } else if (encounteredEnemy == -1) {//If it is possible to have a straight 4, and we have not encountered an enemy while searching
                                 evaluation += FOURS_POINTS;
-                                if (DEBUG)
-                                    System.out.println("[TR-D](2)BOARD[" + row + "][" + col + "]: ADDED UTILITY VALUE OF: " + FOURS_POINTS);
                             } else { //If it is possible to have a straight 4, but we have encountered an enemy while searching, check if there is room on left
 
                                 if (board[row + 1][col - 1] != enemy) {
                                     evaluation += FOURS_POINTS;
-                                    if (DEBUG)
-                                        System.out.println("[TR-D](3)BOARD[" + row + "][" + col + "]: ADDED UTILITY VALUE OF: " + FOURS_POINTS);
                                 }
 
                             }
@@ -1075,7 +978,12 @@ public class Board {
     private static boolean isStraightFour(Player[] sequence, Player player) {
         Player[] straightFour = new Player[]{null, player, player, player, player, null};
         // if (DEBUG) System.out.println("IsStraightFour? " + in.replaceAll(" ", "-"));
-        return sequence.equals(straightFour);
+        //boolean isFour = true;
+        for (int i = 0; i < 6; i++){
+            if (sequence[i] != straightFour[i])
+                return false;
+        }
+        return true;//sequence.equals(straightFour);
     }
 
 
