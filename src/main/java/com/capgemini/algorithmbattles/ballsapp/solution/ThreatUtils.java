@@ -144,10 +144,9 @@ public class ThreatUtils {
         SECONDFOURS.add(new Player[]{SECOND, SECOND, SECOND, SECOND, null});
 
         REFUTATIONS2.addAll(SECONDFOURS);
-
-        SECONDFOURS.add(new Player[]{SECOND, null, SECOND, SECOND, null});
-
         SECONDFOURS2.addAll(SECONDFOURS);
+        
+        SECONDFOURS.add(new Player[]{SECOND, null, SECOND, SECOND, null});
 
         //TO!!!!!
         //SECONDFOURS.add(new Player[]{null, SECOND, SECOND, SECOND, null});
