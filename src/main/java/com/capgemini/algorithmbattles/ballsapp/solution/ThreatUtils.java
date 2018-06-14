@@ -274,6 +274,7 @@ public class ThreatUtils {
                         if (pattern[i] == FIRST && pattern[i + 1] == null && pattern[i + 2] == FIRST)
                             return i + 1;
                 }
+                sum = 0;
                 for (Player[] a : SPECIFIC_THREES) {
                     if (sum == 6) break;
                     sum = 0;
@@ -307,6 +308,7 @@ public class ThreatUtils {
                             return i + 1;
                     }
                 }
+                sum = 0;
                 for (Player[] a : SPECIFIC_THREES2) {
                     if (sum == 6) break;
                     sum = 0;
