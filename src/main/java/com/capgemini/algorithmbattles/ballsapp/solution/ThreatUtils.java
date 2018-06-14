@@ -122,6 +122,7 @@ public class ThreatUtils {
         FIRSTFOURS.add(new Player[]{FIRST, null, FIRST, FIRST, FIRST});
         FIRSTFOURS.add(new Player[]{FIRST, FIRST, FIRST, FIRST, null});
         FIRSTFOURS.add(new Player[]{null, FIRST, FIRST, FIRST, FIRST});
+        FIRSTFOURS.add(new Player[]{FIRST, FIRST, FIRST, FIRST, null});
 
         REFUTATIONS1.addAll(FIRSTFOURS);
 
@@ -140,6 +141,7 @@ public class ThreatUtils {
         SECONDFOURS.add(new Player[]{SECOND, null, SECOND, SECOND, SECOND});
         SECONDFOURS.add(new Player[]{SECOND, SECOND, SECOND, SECOND, null});
         SECONDFOURS.add(new Player[]{null, SECOND, SECOND, SECOND, SECOND});
+        SECONDFOURS.add(new Player[]{SECOND, SECOND, SECOND, SECOND, null});
 
         REFUTATIONS2.addAll(SECONDFOURS);
 
