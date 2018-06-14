@@ -768,7 +768,7 @@ public class Board {
                         sequence2[j] = board[row + j][col + j];
                     where = patterns.matchPattern2(sequence2, player, block);
                     if (where != -1) {
-                        return new BoardCell(row + where, col + where, null);
+                        best = new BoardCell(row + where, col + where, null);
                     }
                 }
 
@@ -818,7 +818,7 @@ public class Board {
                         sequence2[j] = board[row + j][col - j];
                     where = patterns.matchPattern2(sequence2, player, block);
                     if (where != -1) {
-                        return new BoardCell(row + where, col - where, null);
+                        best = new BoardCell(row + where, col - where, null);
                     }
                 }
             }
