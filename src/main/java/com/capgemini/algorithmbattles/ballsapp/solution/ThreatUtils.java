@@ -116,7 +116,7 @@ public class ThreatUtils {
         MIXEDTHREES2.add(new Player[]{SECOND, SECOND, SECOND, null, null, null});
 
 
-        //FOURS.add(new Player[] {null, FIRST, FIRST, FIRST, FIRST, null});
+        //FIRSTFOURS.add(new Player[] {null, FIRST, FIRST, FIRST, FIRST, null});
         FIRSTFOURS.add(new Player[]{FIRST, FIRST, FIRST, null, FIRST});
         FIRSTFOURS.add(new Player[]{FIRST, FIRST, null, FIRST, FIRST});
         FIRSTFOURS.add(new Player[]{FIRST, null, FIRST, FIRST, FIRST});
@@ -126,12 +126,12 @@ public class ThreatUtils {
 
         REFUTATIONS1.addAll(FIRSTFOURS);
 
+        FIRSTFOURS2.addAll(FIRSTFOURS);
 
         FIRSTFOURS.add(new Player[]{FIRST, null, FIRST, FIRST, null});
 
-        FIRSTFOURS2.addAll(FIRSTFOURS);
-
-        FIRSTFOURS.add(new Player[]{null, FIRST, FIRST, FIRST, null});
+        //TO!!!!!
+        //FIRSTFOURS.add(new Player[]{null, FIRST, FIRST, FIRST, null});
 
         /*FIRSTFOURS2.add(new Player[]{FIRST, FIRST, FIRST, FIRST, null});
         FIRSTFOURS2.add(new Player[]{null, FIRST, FIRST, FIRST, FIRST});*/
@@ -149,7 +149,8 @@ public class ThreatUtils {
 
         SECONDFOURS2.addAll(SECONDFOURS);
 
-        SECONDFOURS.add(new Player[]{null, SECOND, SECOND, SECOND, null});
+        //TO!!!!!
+        //SECONDFOURS.add(new Player[]{null, SECOND, SECOND, SECOND, null});
 
 
 
