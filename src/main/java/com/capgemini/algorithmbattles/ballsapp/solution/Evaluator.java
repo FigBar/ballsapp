@@ -1,5 +1,7 @@
 package com.capgemini.algorithmbattles.ballsapp.solution;
 
+import com.capgemini.algorithmbattles.ballsapp.logic.model.Player;
+
 public class Evaluator {
 
     private static final Evaluator INSTANCE = new Evaluator();
@@ -90,5 +92,7 @@ public class Evaluator {
         }
         return score;
     }
+
+
 
 }

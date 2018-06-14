@@ -37,7 +37,7 @@ public class GamePlayer {
 
 
         if (0 < numOfMoves && numOfMoves < 29)
-            maxDepth = 3;
+            maxDepth = 2;
         if (29 <= numOfMoves && numOfMoves < 34)
             maxDepth = 4;
         if (34 <= numOfMoves && numOfMoves < 38)
@@ -123,10 +123,11 @@ public class GamePlayer {
 
         //maximum depth has been reached
         if (depth == this.maxDepth) {
-            if (isMax)
-                return b.getGameState(player);
+            return b.gameStateValue(player);
+            /*if (isMax)
+                return b.gameStateValue(player);
             else
-                return b.getGameState(player.getOther());
+                return b.gameStateValue(player);*/
         }
 
 

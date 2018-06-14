@@ -520,8 +520,93 @@ public class Board {
         return evaluation;
     }
 
+    public double gameStateValue(Player player) {
+        double evaluation = 0;
+        for (int row = 0; row < 10; row++) {
+            int i = 0;
+            while (i < 6) {
+                Player[] sequence = new Player[5];
+                for (int j = i; j < i + 5; j++)
+                    sequence[j - i] = board[row][j];
+                evaluation +=patterns.valuePattern(sequence, player);
+                evaluation -= patterns.valuePattern(sequence, player.getOther());
+                i++;
+            }
+            i = 0;
+            while (i < 5) {
+                Player[] sequence = new Player[6];
+                for (int j = i; j < i + 6; j++)
+                    sequence[j - i] = board[row][j];
+                evaluation += patterns.valuePattern2(sequence, player);
+                evaluation -= patterns.valuePattern2(sequence, player.getOther());
+                i++;
+            }
+        }
+
+        for (int col = 0; col < 10; col++) {
+            int i = 0;
+            while (i < 6) {
+                Player[] sequence = new Player[5];
+                for (int j = i; j < i + 5; j++)
+                    sequence[j - i] = board[j][col];
+                evaluation += patterns.valuePattern(sequence, player);
+                evaluation -= patterns.valuePattern(sequence, player.getOther());
+                i++;
+            }
+
+            i = 0;
+            while (i < 5) {
+                Player[] sequence = new Player[6];
+                for (int j = i; j < i + 6; j++)
+                    sequence[j - i] = board[j][col];
+                evaluation += patterns.valuePattern2(sequence, player);
+                evaluation -= patterns.valuePattern2(sequence, player.getOther());
+                i++;
+            }
+        }
+
+        for (int row = 0; row < 6; row++) {
+            for (int col = 0; col < 6; col++) {
+
+                Player[] sequence = new Player[5];
+                for (int j = 0; j < 5; j++)
+                    sequence[j] = board[row + j][col + j];
+                evaluation += patterns.valuePattern(sequence, player);
+                evaluation -= patterns.valuePattern(sequence, player.getOther());
+                if (row < 5 && col < 5) {
+                    Player[] sequence2 = new Player[6];
+                    for (int j = 0; j < 6; j++)
+                        sequence2[j] = board[row + j][col + j];
+                    evaluation += patterns.valuePattern2(sequence2, player);
+                    evaluation -= patterns.valuePattern2(sequence2, player.getOther());
+                }
+            }
+        }
+
+        for (int row = 0; row < 6; row++) {
+            for (int col = 9; col >= 4; col--) {
+
+                Player[] sequence = new Player[5];
+                for (int j = 0; j < 5; j++)
+                    sequence[j] = board[row + j][col - j];
+                evaluation += patterns.valuePattern(sequence, player);
+                evaluation -= patterns.valuePattern(sequence, player.getOther());
+
+                if (row < 5 && col > 4) {
+                    Player[] sequence2 = new Player[6];
+                    for (int j = 0; j < 6; j++)
+                        sequence2[j] = board[row + j][col - j];
+                    evaluation += patterns.valuePattern2(sequence2, player);
+                    evaluation -= patterns.valuePattern2(sequence2, player.getOther());
+                }
+            }
+        }
+        return evaluation;
+
+    }
+
     private static boolean isStraightFour(Player[] sequence, Player player) {
-        //return ThreatUtils.matchPattern3(sequence, player, true) != -1;
+        //return patterns.matchPattern3(sequence, player, true) != -1;
         Player[] straightFour = new Player[]{null, player, player, player, player, null};
         // if (DEBUG) System.out.println("IsStraightFour? " + in.replaceAll(" ", "-"));
         //boolean isFour = true;
@@ -569,7 +654,7 @@ public class Board {
                 Player[] sequence = new Player[5];
                 for (int j = i; j < i + 5; j++)
                     sequence[j - i] = board[row][j];
-                int where = ThreatUtils.matchPattern(sequence, player, block);
+                int where = patterns.matchPattern(sequence, player, block);
                 if (where != -1)
                     return new BoardCell(row, i + where, null);
                 i++;
@@ -579,7 +664,7 @@ public class Board {
                 Player[] sequence = new Player[6];
                 for (int j = i; j < i + 6; j++)
                     sequence[j - i] = board[row][j];
-                int where = ThreatUtils.matchPattern2(sequence, player, block);
+                int where = patterns.matchPattern2(sequence, player, block);
                 if (where != -1)
                     best = new BoardCell(row, i + where, null);
                 i++;
@@ -632,7 +717,7 @@ public class Board {
                 Player[] sequence = new Player[6];
                 for (int j = i; j < i + 6; j++)
                     sequence[j - i] = board[j][col];
-                int where = ThreatUtils.matchPattern2(sequence, player, block);
+                int where = patterns.matchPattern2(sequence, player, block);
                 if (where != -1)
                     best = new BoardCell(i + where, col, null);
                 i++;
