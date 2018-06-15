@@ -14,13 +14,11 @@ public class Board {
     // private Stack<BoardCell> moves;
  /*   private Player currentPlayer;
     private Player startingPlayer;*/
+    private static final char FIRSTPLAYER = 'F';
+    private static final char SECONDPLAYER = 'S';
+    private static final char EMPTYFIELD = '_';
 
     public static final double FIVE_IN_A_ROW = Double.POSITIVE_INFINITY - 1;
-    public static final double STRAIGHT_FOUR_POINTS = 1000;
-    public static final double FOURS_POINTS = 500;
-    public static final double THREES_POINTS = 100;
-    public static final double TWOS_POINTS = 5;
-    public static final double ONES_POINTS = 1;
 
     public ThreatUtils patterns = new ThreatUtils();
 
@@ -66,6 +64,21 @@ public class Board {
             }
         }
         return null;
+    }
+
+    public String zobristString(){
+        StringBuilder builder = new StringBuilder();
+        for(int i= 0; i<SIZE;i++){
+            for(int j=0; j<SIZE;j++){
+                if(board[i][j] == Player.PLAYER_1)
+                    builder.append(FIRSTPLAYER);
+                if(board[i][j] == Player.PLAYER_2)
+                    builder.append(SECONDPLAYER);
+                else
+                    builder.append(EMPTYFIELD);
+            }
+        }
+        return builder.toString();
     }
 
     public Player[][] getBoard() {
@@ -160,7 +173,7 @@ public class Board {
     }
 
 
-    private static double getPointsToAdd(int val) {
+ /*   private static double getPointsToAdd(int val) {
 
         switch (val) {
 
@@ -186,7 +199,7 @@ public class Board {
 
         }
 
-    }
+    }*/
 
 
     /**
@@ -194,7 +207,7 @@ public class Board {
      *
      * @param player The player's state to analyze
      * @return The utility of the gamestate.
-     */
+     *//*
     public double getGameState(Player player) {
         double[][] maxUtility = new double[SIZE][SIZE];
 
@@ -518,7 +531,7 @@ public class Board {
         }
 
         return evaluation;
-    }
+    }*/
 
     public double gameStateValue(Player player) {
         double evaluation = 0;

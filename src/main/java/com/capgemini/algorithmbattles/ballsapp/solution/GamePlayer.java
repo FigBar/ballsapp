@@ -5,15 +5,19 @@ import com.capgemini.algorithmbattles.ballsapp.logic.model.Board;
 import com.capgemini.algorithmbattles.ballsapp.logic.model.BoardCell;
 import com.capgemini.algorithmbattles.ballsapp.logic.model.Player;
 
+import java.util.HashMap;
+
 public class GamePlayer {
 
     private Player player;
     private Board board = new Board();
     int numOfMoves;
     int maxDepth;
+    HashMap<String, Double> zobristValues;
 
     public GamePlayer(Player player) {
         this.player = player;
+        zobristValues = new HashMap<String, Double>();
         numOfMoves = 0;
         // maxDepth = 100;
     }
@@ -41,13 +45,13 @@ public class GamePlayer {
         if (29 <= numOfMoves && numOfMoves < 34)
             maxDepth = 2;
         if (34 <= numOfMoves && numOfMoves < 38)
-            maxDepth = 5;
+            maxDepth = 3;
         if (38 <= numOfMoves && numOfMoves < 40)
-            maxDepth = 6;
+            maxDepth = 4;
         if (40 <= numOfMoves && numOfMoves < 42)
-            maxDepth = 7;
+            maxDepth = 5;
         if (42 <= numOfMoves && numOfMoves < 44)
-            maxDepth = 8;
+            maxDepth = 6;
 
         double bestVal = Double.NEGATIVE_INFINITY;
         BoardCell bestCell = new BoardCell(-1, -1, player);
@@ -55,12 +59,12 @@ public class GamePlayer {
         Player[][] b = board.getBoard();
 
         BoardCell killer = board.concat(player, false);
-        if(killer!= null){
+        if (killer != null) {
             return killer;
         }
 
         BoardCell blockade = board.concat(player.getOther(), true);
-        if (blockade!= null) {
+        if (blockade != null) {
             return blockade;
         }
 
@@ -99,10 +103,10 @@ public class GamePlayer {
 
     private double minimax(Board b, int depth, boolean isMax, double alpha, double beta) {
 
-        /*double score = 0;
 
-        if (b.getNumFilledCells() > 5)*/
-        double score = b.evaluate(player);
+        double score = 0;
+        if (b.getNumFilledCells() > 2)
+            score = b.evaluate(player);
         //double score2 = -b.scoreGameState(player.getOther());
 
 
@@ -123,7 +127,13 @@ public class GamePlayer {
 
         //maximum depth has been reached
         if (depth == this.maxDepth) {
-            return b.gameStateValue(player);
+            String key = b.zobristString();
+            Double value = zobristValues.get(key);
+            if(value != null)
+                return value;
+            value = b.gameStateValue(player);
+            zobristValues.put(key, value);
+            return value;
             /*if (isMax)
                 return b.gameStateValue(player);
             else

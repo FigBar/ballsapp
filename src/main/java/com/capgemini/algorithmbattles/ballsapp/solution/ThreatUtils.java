@@ -145,7 +145,7 @@ public class ThreatUtils {
 
         REFUTATIONS2.addAll(SECONDFOURS);
         SECONDFOURS2.addAll(SECONDFOURS);
-        
+
         SECONDFOURS.add(new Player[]{SECOND, null, SECOND, SECOND, null});
 
         //TO!!!!!
@@ -185,6 +185,13 @@ public class ThreatUtils {
         REFUTATIONS2.add(new Player[] {SECOND, null, SECOND, SECOND, SECOND, FIRST});*/
     }
 
+    /**
+     * returns index of a place where to put a piece in given pattern or -1 if it is not found
+     * @param pattern
+     * @param player
+     * @param block
+     * @return
+     */
     public int matchPattern(Player[] pattern, Player player, boolean block) {
         int sum = 0;
         if (block) {
@@ -427,12 +434,26 @@ public class ThreatUtils {
             if (sum == 6) {
                 return MIXED_THREES_POINTS;
             }
-            for (int i = 0; i < 3; i++) {
+            sum = 0;
+            for (int i = 0; i < 6; i++) {
+                if (sequence[i] == SECOND && i != 0 && i != 5) {
+                    sum = 0;
+                    break;
+                }
+                if (sequence[i] == FIRST) {
+                    sum++;
+                }
+            }
+            if (sum == 1)
+                return ONES_POINTS;
+            if (sum == 2)
+                return TWOS_POINTS;
+            /*for (int i = 0; i < 3; i++) {
                 if (sequence[i] == null && sequence[i + 1] == FIRST && sequence[i + 2] == FIRST && sequence[i + 3] == null)
                     return TWOS_POINTS;
                 if (sequence[i] == null && sequence[i + 1] == FIRST && sequence[i + 2] == null && sequence[i + 3] == null)
                     return ONES_POINTS;
-            }
+            }*/
         }
 
         if (player == SECOND) {
@@ -460,12 +481,27 @@ public class ThreatUtils {
             if (sum == 6) {
                 return MIXED_THREES_POINTS;
             }
-            for (int i = 0; i < 3; i++) {
-                if (sequence[i] == null && sequence[i + 1] == FIRST && sequence[i + 2] == FIRST && sequence[i + 3] == null)
+            sum = 0;
+            for (int i = 0; i < 6; i++) {
+                if (sequence[i] == FIRST && i != 0 && i != 5) {
+                    sum = 0;
+                    break;
+                }
+                if (sequence[i] == SECOND) {
+                    sum++;
+                }
+            }
+            if (sum == 1)
+                return ONES_POINTS;
+            if (sum == 2)
+                return TWOS_POINTS;
+
+                /*if (sequence[i] == null && sequence[i + 1] == FIRST && sequence[i + 2] == FIRST && sequence[i + 3] == null)
+                    return TWOS_POINTS;
+                if(sequence[i] == null && sequence[i+1] == FIRST && sequence [i+2] == null && sequence [i+3] == FIRST)
                     return TWOS_POINTS;
                 if (sequence[i] == null && sequence[i + 1] == FIRST && sequence[i + 2] == null && sequence[i + 3] == null)
-                    return ONES_POINTS;
-            }
+                    return ONES_POINTS;*/
         }
         return -1;
     }
