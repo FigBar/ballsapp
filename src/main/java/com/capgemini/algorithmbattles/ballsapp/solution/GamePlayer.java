@@ -41,17 +41,14 @@ public class GamePlayer {
 
 
         if (0 < numOfMoves && numOfMoves < 29)
-            maxDepth = 1;
-        if (29 <= numOfMoves && numOfMoves < 34)
             maxDepth = 2;
-        if (34 <= numOfMoves && numOfMoves < 38)
+        if (29 <= numOfMoves && numOfMoves < 38)
             maxDepth = 3;
-        if (38 <= numOfMoves && numOfMoves < 40)
+        if (38 <= numOfMoves && numOfMoves < 42)
             maxDepth = 4;
-        if (40 <= numOfMoves && numOfMoves < 42)
-            maxDepth = 5;
         if (42 <= numOfMoves && numOfMoves < 44)
-            maxDepth = 6;
+            maxDepth = 5;
+
 
         double bestVal = Double.NEGATIVE_INFINITY;
         BoardCell bestCell = new BoardCell(-1, -1, player);
